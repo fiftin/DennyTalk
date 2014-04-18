@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7EFE2106-91E2-4AFA-AA41-654CE4F8615E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DennyTalk</RootNamespace>
+    <AssemblyName>DennyTalk</AssemblyName>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationIcon>comments.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common">
+      <HintPath>..\..\TcpLogViewer\Remoting\bin\Debug\Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddChangeContactDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddChangeContactDialog.Designer.cs">
+      <DependentUpon>AddChangeContactDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationDialog.Designer.cs">
+      <DependentUpon>ConfigurationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ContactInfoEventHandler.cs" />
+    <Compile Include="ContactListUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ContactListUserControl.Designer.cs">
+      <DependentUpon>ContactListUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ContactStatusesUpdate.cs" />
+    <Compile Include="ContantInfo.cs" />
+    <Compile Include="DataGridViewDialogMessageCell.cs" />
+    <Compile Include="DataGridViewDialogMessageColumn.cs" />
+    <Compile Include="DialogManager.cs" />
+    <Compile Include="DataGridViewContactInfoColumn.cs" />
+    <Compile Include="DataGridViewContactInfoCell.cs" />
+    <Compile Include="DialogTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DialogTabPage.Designer.cs">
+      <DependentUpon>DialogTabPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DialogUserControl.Designer.cs">
+      <DependentUpon>DialogUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForm.Designer.cs">
+      <DependentUpon>DialogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateForm.designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Updater.cs" />
+    <Compile Include="WinFormsHelper.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddChangeContactDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AddChangeContactDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigurationDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ConfigurationDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ContactListUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ContactListUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogTabPage.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogTabPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogUserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SendMessageCommunicationClient.cs" />
+    <Compile Include="UserListener.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="add.png" />
+    <None Include="bullet_go.png" />
+    <None Include="angry.png" />
+    <None Include="at_home.png" />
+    <None Include="at_work.png" />
+    <None Include="bad_mood.png" />
+    <None Include="away.png" />
+    <Content Include="comments.ico" />
+    <None Include="comments.png" />
+    <None Include="delete.png" />
+    <None Include="email.png" />
+    <None Include="email_go.png" />
+    <None Include="dnd.png" />
+    <None Include="eating.png" />
+    <None Include="free_for_chat.png" />
+    <None Include="invisible.png" />
+    <None Include="not_available.png" />
+    <None Include="occupied.png" />
+    <None Include="offline.png" />
+    <Content Include="options.xml" />
+    <None Include="pencil.png" />
+    <None Include="tick.png" />
+    <None Include="setting_tools.png" />
+    <None Include="user.png" />
+    <None Include="wrench.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="account.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="nunit.framework">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="nunit.mocks">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WinFormsPopupAlerts\WinFormsPopupAlerts\WinFormsPopupAlerts.csproj">
+      <Project>{D462FBE5-7105-4E1B-A217-3F7FECD70FB1}</Project>
+      <Name>WinFormsPopupAlerts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DennyTalkCore\DennyTalkCore.csproj">
+      <Project>{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}</Project>
+      <Name>DennyTalkCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
