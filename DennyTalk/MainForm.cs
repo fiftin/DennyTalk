@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
+using WinFormsPopupAlerts;
 
 namespace DennyTalk
 {
@@ -433,11 +434,11 @@ namespace DennyTalk
             WinFormsPopupAlerts.PopupAlert alert;
             if (cont == null)
             {
-                alert = popupAlertManager1.Alert(address.IPAddress, message.Text, ImageHelper2.DefaultAvatar);
+                alert = popupAlertManager1.Alert(new TooltipAlertArg(address.IPAddress.ToString(), message.Text, ImageHelper2.DefaultAvatar));
             }
             else
             {
-                alert = popupAlertManager1.Alert(cont.Nick, message.Text, cont.Avatar);
+                alert = popupAlertManager1.Alert(new TooltipAlertArg(cont.Nick, message.Text, cont.Avatar));
             }
             alert.Tag = address;
         }

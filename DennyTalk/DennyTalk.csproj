@@ -53,15 +53,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common">
-      <HintPath>..\..\TcpLogViewer\Remoting\bin\Debug\Common.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WinFormsPopupAlerts, Version=1.0.0.2, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3thparty\WinFormsPopupAlerts.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddChangeContactDialog.cs">
@@ -257,9 +257,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\WinFormsPopupAlerts\WinFormsPopupAlerts\WinFormsPopupAlerts.csproj">
-      <Project>{D462FBE5-7105-4E1B-A217-3F7FECD70FB1}</Project>
-      <Name>WinFormsPopupAlerts</Name>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8D8BE970-A944-41EA-BB43-16C6BA98935D}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\DennyTalkCore\DennyTalkCore.csproj">
       <Project>{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}</Project>
