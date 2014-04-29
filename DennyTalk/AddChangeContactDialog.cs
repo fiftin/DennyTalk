@@ -116,6 +116,16 @@ namespace DennyTalk
             }
         }
 
+        private void btnAdvanced_Click(object sender, EventArgs e)
+        {
+            Height = 221;
+            lblNick.Visible = true;
+            lblPort.Visible = true;
+            txtNick.Visible = true;
+            txtPort.Visible = true;
+            btnAdvanced.Enabled = false;
+        }
+
     }
 
 
