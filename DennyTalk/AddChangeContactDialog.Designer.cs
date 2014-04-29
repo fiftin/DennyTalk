@@ -44,7 +44,7 @@ namespace DennyTalk
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(176, 123);
+            this.btnCancel.Location = new System.Drawing.Point(220, 123);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 31);
             this.btnCancel.TabIndex = 5;
@@ -55,7 +55,7 @@ namespace DennyTalk
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(95, 123);
+            this.btnOK.Location = new System.Drawing.Point(139, 123);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 31);
             this.btnOK.TabIndex = 4;
@@ -76,14 +76,14 @@ namespace DennyTalk
             // 
             this.txtNick.Location = new System.Drawing.Point(67, 13);
             this.txtNick.Name = "txtNick";
-            this.txtNick.Size = new System.Drawing.Size(183, 20);
+            this.txtNick.Size = new System.Drawing.Size(228, 20);
             this.txtNick.TabIndex = 0;
             // 
             // txtGuid
             // 
             this.txtGuid.Location = new System.Drawing.Point(67, 39);
             this.txtGuid.Name = "txtGuid";
-            this.txtGuid.Size = new System.Drawing.Size(183, 20);
+            this.txtGuid.Size = new System.Drawing.Size(228, 20);
             this.txtGuid.TabIndex = 1;
             // 
             // label2
@@ -99,7 +99,7 @@ namespace DennyTalk
             // 
             this.txtHost.Location = new System.Drawing.Point(67, 65);
             this.txtHost.Name = "txtHost";
-            this.txtHost.Size = new System.Drawing.Size(183, 20);
+            this.txtHost.Size = new System.Drawing.Size(228, 20);
             this.txtHost.TabIndex = 2;
             // 
             // label3
@@ -119,7 +119,7 @@ namespace DennyTalk
             "tess"});
             this.txtPort.Location = new System.Drawing.Point(67, 91);
             this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(183, 20);
+            this.txtPort.Size = new System.Drawing.Size(228, 20);
             this.txtPort.TabIndex = 3;
             // 
             // label4
@@ -137,7 +137,7 @@ namespace DennyTalk
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(263, 166);
+            this.ClientSize = new System.Drawing.Size(307, 166);
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtHost);
