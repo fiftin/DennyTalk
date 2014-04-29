@@ -62,7 +62,7 @@ namespace DennyTalk
             this.toolStripButtonConfig = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonUpdate = new System.Windows.Forms.ToolStripButton();
-            this.popupAlertManager1 = new WinFormsPopupAlerts.PopupAlertManager(this.components);
+            this.popupAlertManager1 = new WinFormsPopupAlerts.AlertManager(this.components);
             this.tooltipAlertFactory1 = new WinFormsPopupAlerts.TooltipAlertFactory(this.components);
             this.contactListUserControl1 = new DennyTalk.ContactListUserControl();
             this.contextMenuStrip2.SuspendLayout();
@@ -381,7 +381,7 @@ namespace DennyTalk
             // 
             // popupAlertManager1
             // 
-            this.popupAlertManager1.AlertAlignment = WinFormsPopupAlerts.PopupAlertAlignment.BottomLeft;
+            this.popupAlertManager1.AlertAlignment = WinFormsPopupAlerts.AlertAlignment.BottomLeft;
             this.popupAlertManager1.AlertFactory = this.tooltipAlertFactory1;
             this.popupAlertManager1.AlertsMaxCount = 15;
             this.popupAlertManager1.ContainerControl = this;
@@ -469,7 +469,7 @@ namespace DennyTalk
         private System.Windows.Forms.ToolStripMenuItem statusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonUpdate;
-        private WinFormsPopupAlerts.PopupAlertManager popupAlertManager1;
+        private WinFormsPopupAlerts.AlertManager popupAlertManager1;
         private WinFormsPopupAlerts.TooltipAlertFactory tooltipAlertFactory1;
     }
 }

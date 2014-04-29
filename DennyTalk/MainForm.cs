@@ -431,7 +431,7 @@ namespace DennyTalk
             }
             notifyIcon1.Tag = address;
             //notifyIcon1.ShowBalloonTip(100);
-            WinFormsPopupAlerts.PopupAlert alert;
+            WinFormsPopupAlerts.Alert alert;
             if (cont == null)
             {
                 alert = popupAlertManager1.Alert(new TooltipAlertArg(address.IPAddress.ToString(), message.Text, ImageHelper2.DefaultAvatar));
@@ -506,7 +506,7 @@ namespace DennyTalk
 
         private void tooltipAlertFactory1_AlertMouseDown(object sender, MouseEventArgs e)
         {
-            WinFormsPopupAlerts.PopupAlert alert = (WinFormsPopupAlerts.PopupAlert)sender;
+            WinFormsPopupAlerts.Alert alert = (WinFormsPopupAlerts.Alert)sender;
             Address addr = (Address)alert.Tag;
             ContactInfo cont = ContactList.GetContactByAddress(addr);
             if (cont != null)
