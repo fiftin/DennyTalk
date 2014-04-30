@@ -8,15 +8,8 @@ using System.Windows.Forms;
 
 namespace DennyTalk
 {
-
-
-
-
     public partial class DialogForm : Form
     {
-
-
-
         public DialogForm()
         {
             InitializeComponent();

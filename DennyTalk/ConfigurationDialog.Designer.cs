@@ -41,13 +41,14 @@ namespace DennyTalk
             this.txtUpdateServer = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.btnCheckUpdate = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(233, 222);
+            this.btnOK.Location = new System.Drawing.Point(233, 242);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 32);
             this.btnOK.TabIndex = 2;
@@ -59,7 +60,7 @@ namespace DennyTalk
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(314, 222);
+            this.btnCancel.Location = new System.Drawing.Point(314, 242);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 32);
             this.btnCancel.TabIndex = 3;
@@ -84,8 +85,8 @@ namespace DennyTalk
             // 
             // txtGuid
             // 
-            this.txtGuid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGuid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGuid.Location = new System.Drawing.Point(97, 42);
             this.txtGuid.Name = "txtGuid";
             this.txtGuid.Size = new System.Drawing.Size(292, 20);
@@ -102,9 +103,9 @@ namespace DennyTalk
             // 
             // txtServerHost
             // 
-            this.txtServerHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtServerHost.Location = new System.Drawing.Point(97, 77);
+            this.txtServerHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServerHost.Location = new System.Drawing.Point(97, 68);
             this.txtServerHost.Name = "txtServerHost";
             this.txtServerHost.Size = new System.Drawing.Size(292, 20);
             this.txtServerHost.TabIndex = 9;
@@ -112,7 +113,7 @@ namespace DennyTalk
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 80);
+            this.label3.Location = new System.Drawing.Point(12, 71);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(66, 13);
             this.label3.TabIndex = 8;
@@ -120,9 +121,9 @@ namespace DennyTalk
             // 
             // txtServerPort
             // 
-            this.txtServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtServerPort.Location = new System.Drawing.Point(97, 103);
+            this.txtServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServerPort.Location = new System.Drawing.Point(97, 94);
             this.txtServerPort.Name = "txtServerPort";
             this.txtServerPort.Size = new System.Drawing.Size(292, 20);
             this.txtServerPort.TabIndex = 11;
@@ -130,7 +131,7 @@ namespace DennyTalk
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 106);
+            this.label4.Location = new System.Drawing.Point(12, 97);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(63, 13);
             this.label4.TabIndex = 10;
@@ -138,9 +139,9 @@ namespace DennyTalk
             // 
             // txtUpdateServer
             // 
-            this.txtUpdateServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUpdateServer.Location = new System.Drawing.Point(97, 138);
+            this.txtUpdateServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUpdateServer.Location = new System.Drawing.Point(97, 156);
             this.txtUpdateServer.Name = "txtUpdateServer";
             this.txtUpdateServer.Size = new System.Drawing.Size(292, 20);
             this.txtUpdateServer.TabIndex = 13;
@@ -148,7 +149,7 @@ namespace DennyTalk
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 141);
+            this.label5.Location = new System.Drawing.Point(12, 159);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(79, 13);
             this.label5.TabIndex = 12;
@@ -157,7 +158,7 @@ namespace DennyTalk
             // btnCheckUpdate
             // 
             this.btnCheckUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCheckUpdate.Location = new System.Drawing.Point(265, 164);
+            this.btnCheckUpdate.Location = new System.Drawing.Point(265, 184);
             this.btnCheckUpdate.Name = "btnCheckUpdate";
             this.btnCheckUpdate.Size = new System.Drawing.Size(124, 40);
             this.btnCheckUpdate.TabIndex = 14;
@@ -165,13 +166,24 @@ namespace DennyTalk
             this.btnCheckUpdate.UseVisualStyleBackColor = true;
             this.btnCheckUpdate.Click += new System.EventHandler(this.button1_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(97, 120);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(77, 17);
+            this.checkBox1.TabIndex = 15;
+            this.checkBox1.Text = "Use server";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // ConfigurationDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(401, 266);
+            this.ClientSize = new System.Drawing.Size(401, 286);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.btnCheckUpdate);
             this.Controls.Add(this.txtUpdateServer);
             this.Controls.Add(this.label5);
@@ -209,6 +221,7 @@ namespace DennyTalk
         private System.Windows.Forms.TextBox txtUpdateServer;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnCheckUpdate;
+        private System.Windows.Forms.CheckBox checkBox1;
 
     }
 }
