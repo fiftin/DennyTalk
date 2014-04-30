@@ -339,8 +339,7 @@ namespace DennyTalk
 
             if (dialog.ShowDialog(MainForm) == DialogResult.OK)
             {
-
-                contact.Nick = dialog.Nick != "" ? dialog.Nick : "Unnamed";
+                contact.Nick = dialog.Nick != "" ? dialog.Nick : (dialog.Host != "" ? dialog.Host : "Unnamed");
                 string host = dialog.Host;
                 int port = dialog.Port;
                 string guid = dialog.Guid;
@@ -375,6 +374,7 @@ namespace DennyTalk
                 messanger.ServerHost = dialog.ServerHost;
                 messanger.ServerPort = dialog.ServerPort;
                 messanger.UpdateServerHost = dialog.UpdateServerHost;
+                
             }
 
             dialog.CheckUpdates -= dialog_CheckUpdates;
@@ -457,7 +457,7 @@ namespace DennyTalk
             AddChangeContactDialog dialog = new AddChangeContactDialog();
             if (dialog.ShowDialog(MainForm) == DialogResult.OK)
             {
-                contact.Nick = dialog.Nick != "" ? dialog.Nick : "Unnamed";
+                contact.Nick = dialog.Nick != "" ? dialog.Nick : (dialog.Host != "" ? dialog.Host : "Unnamed");
 
                 string host = dialog.Host;
                 int port = dialog.Port;

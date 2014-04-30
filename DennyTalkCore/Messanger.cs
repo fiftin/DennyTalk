@@ -295,6 +295,7 @@ namespace DennyTalk
                     accountStorage["Address"]["Port"].Value = account.Address.Port;
                     accountStorage["Address"]["GUID"].Value = account.Address.Guid;
                     accountStorage.Save();
+                    SendInfoToContactsAsync();
                     break;
             }
         }
@@ -457,10 +458,18 @@ namespace DennyTalk
             {
                 contact.Status = e.Status;
                 contact.StatusText = e.StatusText;
-                if (!contact.Address.EqualIPAddress(e.Address))
-                    contact.Address = e.Address;
-                if (contact.Address.Guid != e.Address.Guid)
+                if (!contact.Address.EqualIPAddress(e.Address)) // Это условие выполнятеся, когда контакт был найден по GUID.
+                {                                               // В этом случае нужно предупредить пользователя, что контакт с таким-то GUID изменил свой Host.
+                    
+                    contact.Address = e.Address; 
+               
+                }
+                if (contact.Address.Guid != e.Address.Guid) // Это условие выполнятеся, когда контакт был найден по Host.
+                {
+
                     contact.Address = new Address(contact.Address, e.Address.Guid);
+
+                }
                 contact.Nick = e.Nick;
                 contact.Avatar = e.Avatar;
                 contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;

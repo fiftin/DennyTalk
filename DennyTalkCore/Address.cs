@@ -47,14 +47,33 @@ namespace DennyTalk
         }
 
         private IPHostEntry hostEntry;
+        private bool hostEntryIsNull;
+
+        public IPAddress[] Addresses
+        {
+            get
+            {
+                IPHostEntry hostEntry = HostEntry;
+                if (hostEntry == null)
+                    return new IPAddress[0];
+                return HostEntry.AddressList;
+            }
+        }
 
         public IPHostEntry HostEntry
         {
             get
             {
-                if (hostEntry == null)
+                if (hostEntry == null && !hostEntryIsNull)
                 {
-                    hostEntry = Dns.GetHostEntry(host);
+                    try
+                    {
+                        hostEntry = Dns.GetHostEntry(host);
+                    }
+                    catch (Exception)
+                    {
+                        hostEntryIsNull = true;
+                    }
                 }
                 return hostEntry;
             }
@@ -62,27 +81,39 @@ namespace DennyTalk
 
         public bool Equals(Address other)
         {
-            return Guid == other.Guid || EqualIPAddress(other);
+            return Guid == other.Guid 
+                || EqualIPAddress(other)
+                //|| IPAddress.Equals(other.IPAddress)
+                //|| Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
+                ;
         }
 
         public bool EqualIPAddress(Address other)
         {
             bool eq = false;
-            foreach (IPAddress addr in HostEntry.AddressList)
+            if (HostEntry != null)
             {
-                if (Array.Exists(other.HostEntry.AddressList, x => x.Equals(addr)))
+                foreach (IPAddress addr in HostEntry.AddressList)
                 {
-                    eq = true;
-                    break;
+                    if (Array.Exists(other.Addresses, x => x.Equals(addr)))
+                    {
+                        eq = true;
+                        break;
+                    }
                 }
             }
             eq = eq
-                || Array.Exists(other.HostEntry.AddressList, x => x.Equals(IPAddress))
-                || Array.Exists(HostEntry.AddressList, x => x.Equals(other.IPAddress))
-                || HostEntry.HostName.Equals(other.HostEntry.HostName) 
+                || Array.Exists(other.Addresses, x => x.Equals(IPAddress))
+                || Array.Exists(Addresses, x => x.Equals(other.IPAddress))
+                || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
                 || IPAddress.Equals(other.IPAddress) 
-                || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase);
-            return eq && Port == other.Port;
+                || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
+                ;
+            if (eq && Port == other.Port)
+            {
+                return true;
+            }
+            return false;
         }
 
         public IPAddress IPAddress
