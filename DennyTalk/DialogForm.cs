@@ -26,7 +26,7 @@ namespace DennyTalk
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
-                if (page.UserInfo.Address.CompareTo(address) == 0)
+                if (page.UserInfo.Address.Equals(address))
                 {
                     return page.Dialog;
                 }
@@ -63,7 +63,7 @@ namespace DennyTalk
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
-                if (page.UserInfo.Address.CompareTo(address) == 0)
+                if (page.UserInfo.Address.Equals(address))
                 {
                     return true;
                 }
@@ -75,7 +75,7 @@ namespace DennyTalk
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
-                if (page.UserInfo.CompareTo(contactInfo) == 0)
+                if (page.UserInfo.Equals(contactInfo))
                 {
                     return true;
                 }
@@ -87,7 +87,7 @@ namespace DennyTalk
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
-                if (page.UserInfo.Address.CompareTo(address) == 0)
+                if (page.UserInfo.Address.Equals(address))
                 {
                     tabControl1.SelectedTab = page;
                     return page.Dialog;
@@ -102,7 +102,7 @@ namespace DennyTalk
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
-                if (page.UserInfo.CompareTo(contactInfo) == 0)
+                if (page.UserInfo.Equals(contactInfo))
                 {
                     tabControl1.SelectedTab = page;
                     page.ImageIndex = (int)page.Dialog.UserInfo.Status;

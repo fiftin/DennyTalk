@@ -5,7 +5,7 @@ using System.Net;
 
 namespace DennyTalk
 {
-    public class Address : IComparable<Address>
+    public class Address
     {
         private int port;
         private string host;
@@ -15,6 +15,13 @@ namespace DennyTalk
         {
             port = endPoint.Port;
             host = endPoint.Address.ToString();
+        }
+
+        public Address(Address address, string guid)
+        {
+            this.host = address.host;
+            this.port = address.port;
+            this.guid = guid;
         }
 
         public Address(string host, int port, string guid)
@@ -39,13 +46,43 @@ namespace DennyTalk
             get { return port; }
         }
 
-        public int CompareTo(Address other)
+        private IPHostEntry hostEntry;
+
+        public IPHostEntry HostEntry
         {
-            if (string.IsNullOrEmpty(Guid) || string.IsNullOrEmpty(other.Guid))
+            get
             {
-                return IPAddress.Equals(other.IPAddress) && Port == other.Port ? 0 : -1;
+                if (hostEntry == null)
+                {
+                    hostEntry = Dns.GetHostEntry(host);
+                }
+                return hostEntry;
             }
-            return Guid == other.Guid ? 0 : -1;
+        }
+
+        public bool Equals(Address other)
+        {
+            return Guid == other.Guid || EqualIPAddress(other);
+        }
+
+        public bool EqualIPAddress(Address other)
+        {
+            bool eq = false;
+            foreach (IPAddress addr in HostEntry.AddressList)
+            {
+                if (Array.Exists(other.HostEntry.AddressList, x => x.Equals(addr)))
+                {
+                    eq = true;
+                    break;
+                }
+            }
+            eq = eq
+                || Array.Exists(other.HostEntry.AddressList, x => x.Equals(IPAddress))
+                || Array.Exists(HostEntry.AddressList, x => x.Equals(other.IPAddress))
+                || HostEntry.HostName.Equals(other.HostEntry.HostName) 
+                || IPAddress.Equals(other.IPAddress) 
+                || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase);
+            return eq && Port == other.Port;
         }
 
         public IPAddress IPAddress

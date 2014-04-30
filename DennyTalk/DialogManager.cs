@@ -476,8 +476,10 @@ namespace DennyTalk
                 contact.Address = new Address(host, port, guid);
 
                 contact.Avatar = ImageHelper2.DefaultAvatar;
-                contactManager.AddContact(contact);
-                TelegramSendResult result = messanger.TelegramListener.RequestUserInfo(contact.Address);
+                if (contactManager.AddContact(contact))
+                    messanger.TelegramListener.RequestUserInfo(contact.Address);
+                else
+                    MessageBox.Show("User with this address already exists in your contact list", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

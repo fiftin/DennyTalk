@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace DennyTalk
 {
-    public class ContactInfo : IComparable<ContactInfo>, INotifyPropertyChanged, IPropertyChangeNotifier
+    public class ContactInfo : INotifyPropertyChanged, IPropertyChangeNotifier
     {
         private string nick;
         private UserStatus status;
@@ -128,9 +128,9 @@ namespace DennyTalk
             }
         }
 
-        public int CompareTo(ContactInfo other)
+        public bool Equals(ContactInfo other)
         {
-            return address.CompareTo(other.Address);
+            return address.Equals(other.Address);
         }
 
         public virtual void NotifyPropertyChanged(string propertyName)

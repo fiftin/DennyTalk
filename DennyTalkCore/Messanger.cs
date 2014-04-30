@@ -242,11 +242,6 @@ namespace DennyTalk
 
         void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            Contact cont = contactManager.GetContactByAddress(e.Address);
-            if (cont != null && cont.Address != null && (cont.Address.Host != e.Address.Host || cont.Address.Port != e.Address.Port))
-            {
-                cont.Address = e.Address;
-            }
             telegramListener.SendTelegramDelivery(e.Address, e.ID);
         }
 
@@ -317,8 +312,7 @@ namespace DennyTalk
                     otherAddr = (Address)e.OldValue;
                 else
                     otherAddr = e.Contact.Address;
-
-                if (address.CompareTo(otherAddr) == 0)
+                if (address.Equals(otherAddr))
                 {
                     nodeForUpdate = node;
                     break;
@@ -369,7 +363,7 @@ namespace DennyTalk
                 IStorageNode addressNode = node["Address"];
                 int port = int.Parse(addressNode["Port"].Value.ToString());
                 Address address = new Address((string)addressNode["Host"].Value, port, (string)addressNode["GUID"].Value);
-                if (address.CompareTo(e.Contact.Address) == 0)
+                if (address.Equals(e.Contact.Address))
                 {
                     nodeForRemove = node;
                     break;
@@ -463,7 +457,10 @@ namespace DennyTalk
             {
                 contact.Status = e.Status;
                 contact.StatusText = e.StatusText;
-                contact.Address = e.Address;
+                if (!contact.Address.EqualIPAddress(e.Address))
+                    contact.Address = e.Address;
+                if (contact.Address.Guid != e.Address.Guid)
+                    contact.Address = new Address(contact.Address, e.Address.Guid);
                 contact.Nick = e.Nick;
                 contact.Avatar = e.Avatar;
                 contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;

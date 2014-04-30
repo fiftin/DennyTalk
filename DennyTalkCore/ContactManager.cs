@@ -53,7 +53,7 @@ namespace DennyTalk
         {
             foreach (Contact cont in contacts)
             {
-                if (cont.Address.CompareTo(address) == 0)
+                if (cont.Address.Equals(address))
                 {
                     return cont;
                 }
@@ -80,11 +80,14 @@ namespace DennyTalk
             return contacts.ToArray();
         }
 
-        public void AddContact(Contact contact)
+        public bool AddContact(Contact contact)
         {
+            if (Array.Exists(GetContacts(), x => x.Address.Equals(contact.Address)))
+                return false;
             contacts.Add(contact);
             contact.PropertyChange += new EventHandler<PropertyChangeNotifierEventArgs>(contact_PropertyChange);
             OnContactAdded(contact);
+            return true;
         }
 
         void contact_PropertyChange(object sender, PropertyChangeNotifierEventArgs e)

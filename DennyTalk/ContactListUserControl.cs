@@ -48,7 +48,7 @@ namespace DennyTalk
         {
             foreach (ContactInfo cont in contacts)
             {
-                if (cont.Address.CompareTo(address) == 0)
+                if (cont.Address.Equals(address))
                     return cont;
             }
             return null;
