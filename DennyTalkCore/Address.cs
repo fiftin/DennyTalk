@@ -108,6 +108,11 @@ namespace DennyTalk
                 || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
                 || IPAddress.Equals(other.IPAddress) 
                 || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
+                //|| Array.Exists(other.Addresses, x => x.Equals(IPAddress))
+                //|| Array.Exists(Addresses, x => x.Equals(other.IPAddress))
+                //|| HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
+                //|| IPAddress.Equals(other.IPAddress) 
+                //|| Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
                 ;
             if (eq && Port == other.Port)
             {
