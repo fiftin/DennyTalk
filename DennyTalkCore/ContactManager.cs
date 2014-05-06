@@ -51,7 +51,7 @@ namespace DennyTalk
     {
         public Contact GetContactByAddress(Address address)
         {
-            foreach (Contact cont in contacts)
+            foreach (Contact cont in contacts.ToArray())
             {
                 if (cont.Address.Equals(address))
                 {

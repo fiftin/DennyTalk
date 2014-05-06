@@ -21,7 +21,7 @@ namespace DennyTalk
             {
                 br = Brushes.Red;
             }
-            Font font = new Font("Arial", 9, FontStyle.Bold);
+            Font font = new Font("Courier new", 9, FontStyle.Bold);
             string nick = msg.SenderNick;
             if (string.IsNullOrEmpty(nick))
             {

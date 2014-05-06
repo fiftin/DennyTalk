@@ -81,7 +81,7 @@ namespace DennyTalk
 
         public bool Equals(Address other)
         {
-            return Guid == other.Guid 
+            return !string.IsNullOrEmpty(Guid) && !string.IsNullOrEmpty(other.Guid) && Guid == other.Guid 
                 || EqualIPAddress(other)
                 //|| IPAddress.Equals(other.IPAddress)
                 //|| Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
@@ -108,11 +108,6 @@ namespace DennyTalk
                 || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
                 || IPAddress.Equals(other.IPAddress) 
                 || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
-                //|| Array.Exists(other.Addresses, x => x.Equals(IPAddress))
-                //|| Array.Exists(Addresses, x => x.Equals(other.IPAddress))
-                //|| HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
-                //|| IPAddress.Equals(other.IPAddress) 
-                //|| Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
                 ;
             if (eq && Port == other.Port)
             {
@@ -126,10 +121,13 @@ namespace DennyTalk
             get
             {
                 IPAddress addr;
+                
                 if (IPAddress.TryParse(host, out addr))
                     return addr;
                 else
-                    return IPAddress.Loopback;
+                {
+                    return HostEntry.AddressList[0];
+                }
             }
         }
 	

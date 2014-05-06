@@ -149,7 +149,7 @@ namespace DennyTalk
                 if (msg.ID == messageID)
                 {
                     msg.Delivered = true;
-                    msg.NotifyPropertyChanged("Text");
+                    Invoke(new MethodInvoker(() =>  msg.NotifyPropertyChanged("Text")));
                 }
             }
         }

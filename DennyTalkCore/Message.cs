@@ -78,7 +78,11 @@ namespace DennyTalk
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                try
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                }
+                catch { }
             }
         }
     }
