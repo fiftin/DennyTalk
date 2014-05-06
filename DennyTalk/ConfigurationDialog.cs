@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace DennyTalk
 {
@@ -60,6 +61,12 @@ namespace DennyTalk
         {
             port = int.Parse(txtPort.Text);
             serverPort = int.Parse(txtServerPort.Text);
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (chkAutorun.Checked)
+                // Add the value in the registry so that the application runs at startup
+                rkApp.SetValue("DennyTalk", Application.ExecutablePath.ToString());
+            else
+                rkApp.DeleteValue("DennyTalk", false);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -68,5 +75,15 @@ namespace DennyTalk
         }
 
         public event EventHandler CheckUpdates;
+
+        private void chkAutorun_CheckedChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void ConfigurationDialog_Load(object sender, EventArgs e)
+        {
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            chkAutorun.Checked = rkApp.GetValue("DennyTalk") != null;
+        }
     }
 }

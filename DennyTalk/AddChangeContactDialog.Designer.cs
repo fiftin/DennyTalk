@@ -75,6 +75,7 @@ namespace DennyTalk
             this.lblNick.Size = new System.Drawing.Size(29, 13);
             this.lblNick.TabIndex = 4;
             this.lblNick.Text = "Nick";
+            this.lblNick.Visible = false;
             // 
             // txtNick
             // 
