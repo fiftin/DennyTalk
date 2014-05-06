@@ -147,7 +147,7 @@ namespace DennyTalk
             serverHost = (string)optionStorage["ServerHost"].Value;
             if (string.IsNullOrEmpty(serverHost))
             {
-                serverHost = "192.168.63.137";
+                serverHost = "";
                 optionStorage["ServerHost"].Value = serverHost;
                 optionStorage.Save();
             }
@@ -160,7 +160,7 @@ namespace DennyTalk
             updateServerHost = (string)optionStorage["UpdateServerHost"].Value;
             if (string.IsNullOrEmpty(updateServerHost))
             {
-                updateServerHost = "http://192.168.63.137/dennytalk";
+                updateServerHost = "";
                 optionStorage["UpdateServerHost"].Value = updateServerHost;
                 optionStorage.Save();
             }

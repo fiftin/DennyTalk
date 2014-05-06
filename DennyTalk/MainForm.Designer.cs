@@ -233,7 +233,7 @@ namespace DennyTalk
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(198, 60);
+            this.panel1.Size = new System.Drawing.Size(283, 60);
             this.panel1.TabIndex = 0;
             // 
             // lblStatusText
@@ -342,7 +342,7 @@ namespace DennyTalk
             this.toolStrip1.Location = new System.Drawing.Point(0, 284);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 1, 0);
-            this.toolStrip1.Size = new System.Drawing.Size(198, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(283, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -399,7 +399,7 @@ namespace DennyTalk
             this.contactListUserControl1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.contactListUserControl1.Location = new System.Drawing.Point(0, 60);
             this.contactListUserControl1.Name = "contactListUserControl1";
-            this.contactListUserControl1.Size = new System.Drawing.Size(198, 224);
+            this.contactListUserControl1.Size = new System.Drawing.Size(283, 224);
             this.contactListUserControl1.TabIndex = 1;
             this.contactListUserControl1.ContactDoubleClick += new System.EventHandler<DennyTalk.ContactInfoEventArgs>(this.contactListUserControl1_ContactDoubleClick);
             // 
@@ -407,7 +407,7 @@ namespace DennyTalk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(198, 309);
+            this.ClientSize = new System.Drawing.Size(283, 309);
             this.Controls.Add(this.contactListUserControl1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
