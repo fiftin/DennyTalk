@@ -16,7 +16,6 @@ namespace DennyTalk
             InitializeComponent();
         }
 
-        private string nick = "";
         private string guid = "";
         private string host = "";
         private int port = 0;
@@ -31,14 +30,14 @@ namespace DennyTalk
                 if (action == AddChangeContactAction.Add)
                 {
                     Text = "Add Contact";
-                    txtGuid.Enabled = true;
-                    txtGuid.UseSystemPasswordChar = false;
+                    lblGuid.Enabled = false;
+                    txtGuid.Enabled = false;
                 }
                 else if (action == AddChangeContactAction.Change)
                 {
                     Text = "Change Contact";
+                    lblGuid.Enabled = true;
                     txtGuid.Enabled = true;
-                    txtGuid.UseSystemPasswordChar = false;
                 }
             }
         }
@@ -61,12 +60,6 @@ namespace DennyTalk
             set { guid = value; }
         }
 
-        public string Nick
-        {
-            get { return nick; }
-            set { nick = value; }
-        }
-
         private Form owner;
 
         public DialogResult ShowDialog(Form owner)
@@ -80,7 +73,6 @@ namespace DennyTalk
             this.Left = owner.Left + (owner.Width - this.Width) / 2;
             this.Top = owner.Top + (owner.Height - this.Height) / 2;
 
-            txtNick.Text = nick;
             txtGuid.Text = guid;
             txtHost.Text = host;
             if (port > 0)
@@ -102,7 +94,6 @@ namespace DennyTalk
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            nick = txtNick.Text.Trim();
             guid = txtGuid.Text.Trim();
             host = txtHost.Text.Trim();
             if (!int.TryParse(txtPort.Text.Trim(), out port))

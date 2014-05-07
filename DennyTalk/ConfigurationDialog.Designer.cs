@@ -86,8 +86,8 @@ namespace DennyTalk
             // 
             // txtGuid
             // 
-            this.txtGuid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGuid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGuid.Location = new System.Drawing.Point(97, 42);
             this.txtGuid.Name = "txtGuid";
             this.txtGuid.Size = new System.Drawing.Size(292, 20);
@@ -98,14 +98,14 @@ namespace DennyTalk
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 45);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 13);
+            this.label2.Size = new System.Drawing.Size(54, 13);
             this.label2.TabIndex = 6;
-            this.label2.Text = "GUID:";
+            this.label2.Text = "Global ID:";
             // 
             // txtServerHost
             // 
-            this.txtServerHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServerHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServerHost.Location = new System.Drawing.Point(97, 243);
             this.txtServerHost.Name = "txtServerHost";
             this.txtServerHost.Size = new System.Drawing.Size(292, 20);
@@ -124,8 +124,8 @@ namespace DennyTalk
             // 
             // txtServerPort
             // 
-            this.txtServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServerPort.Location = new System.Drawing.Point(97, 269);
             this.txtServerPort.Name = "txtServerPort";
             this.txtServerPort.Size = new System.Drawing.Size(292, 20);

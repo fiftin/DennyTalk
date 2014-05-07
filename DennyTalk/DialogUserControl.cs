@@ -10,6 +10,13 @@ namespace DennyTalk
 {
     public partial class DialogUserControl : UserControl, IPropertyChangeNotifier
     {
+        private Bitmap accountAvatar;
+        private string accountNick;
+        private Address accountAddress;
+        private ContactInfo contactInfo;
+        private BindingList<Message> messages = new BindingList<Message>();
+        public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
+
         public DialogUserControl()
         {
             InitializeComponent();
@@ -53,6 +60,16 @@ namespace DennyTalk
 
             this.messages.Add(msg);
             dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
+
+            int o = dataGridView1.Rows.Count % 2;
+
+            if (o == 0)
+            {
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0].Style.BackColor = Color.LightGray;
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[1].Style.BackColor = Color.LightGray;
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = Color.LightGray;
+            }
+
         }
 
         public ContactInfo UserInfo
@@ -85,9 +102,6 @@ namespace DennyTalk
             }
         }
 
-        private Bitmap accountAvatar;
-        private string accountNick;
-        private Address accountAddress;
 
         public Address AccountAddress
         {
@@ -116,8 +130,6 @@ namespace DennyTalk
         }
 
 
-        private ContactInfo contactInfo;
-        private BindingList<Message> messages = new BindingList<Message>();
 
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
         {
@@ -127,11 +139,9 @@ namespace DennyTalk
             }
         }
 
-        public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
-
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
+            if (dataGridView1.SelectedRows.Count > 0 && !dataGridView1.IsCurrentCellInEditMode)
             {
                 Message copyMessage = (Message)dataGridView1.SelectedRows[0].DataBoundItem;
                 string text = copyMessage.Text;
@@ -139,8 +149,6 @@ namespace DennyTalk
                 Clipboard.SetText(text);
             }
         }
-
-
 
         public void SetMessageDelivered(int messageID)
         {
@@ -158,6 +166,30 @@ namespace DennyTalk
         {
             if (e.RowIndex >= 0)
                 dataGridView1.Rows[e.RowIndex].Selected = true;
+        }
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+                dataGridView1.BeginEdit(true);  
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = oldValue;
+            }
+        }
+
+        private object oldValue;
+
+        private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                oldValue = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            }
         }
     }
 }

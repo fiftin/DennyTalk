@@ -18,6 +18,7 @@ namespace DennyTalk
         private MainForm mainForm = new MainForm();
         private DialogForm dialogForm = new DialogForm();
 
+        public event EventHandler CheckUpdates;
 
 
         private ContactInfo ConvertToContactInfo(Contact cont)
@@ -67,9 +68,7 @@ namespace DennyTalk
             contactManager = this.messanger.ContactManager;
             account = this.messanger.Account;
             history = this.messanger.History;
-
             Initialize();
-
         }
 
         private void Initialize()
@@ -99,11 +98,8 @@ namespace DennyTalk
         {
             Address addr = e.Contact.Address;
             if (e.PropertyName == "Address")
-            {
                 addr = (Address)e.OldValue;
-            }
             ContactInfo cont = MainForm.ContactList.GetContactByAddress(addr);
-            
             if (cont != null)
             {
                 switch (e.PropertyName)
@@ -125,8 +121,6 @@ namespace DennyTalk
                         break;
                 }                
             }
-             
-
         }
 
         void contactManager_ContactRemoved(object sender, ContactEventArgs e)
@@ -138,7 +132,6 @@ namespace DennyTalk
         {
             MainForm.ContactList.AddContacts(new ContactInfo[] { ConvertToContactInfo(e.Contact) });
         }
-
 
         private void InitializeTelegramListener()
         {
@@ -199,9 +192,7 @@ namespace DennyTalk
                         MainForm.SetContactImageAsNewMessage(histMessage, e.Address);
                 }));
             }
-
             DialogUserControl dialog = DialogForm.GetDialog(e.Address);
-
             if (dialog == null)
             {
                 Contact contact = contactManager.GetContactByAddress(e.Address);
@@ -227,12 +218,10 @@ namespace DennyTalk
                     telegramListener.RequestUserInfo(e.Address);
                 }
             }
-
             dialog.Invoke(new MethodInvoker(delegate()
             {
                 dialog.AddMessage(histMessage);
             }));
- 
         }
 
         private void InitializeDialogs()
@@ -277,11 +266,8 @@ namespace DennyTalk
 
         void dialogForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.ApplicationExitCall
-                || e.CloseReason == CloseReason.FormOwnerClosing)
-            {
-            }
-            else
+            if (e.CloseReason != CloseReason.ApplicationExitCall
+                && e.CloseReason != CloseReason.FormOwnerClosing)
             {
                 e.Cancel = true;
                 DialogForm.CloseAllDialogs();
@@ -335,11 +321,9 @@ namespace DennyTalk
             dialog.Guid = contact.Address.Guid;
             dialog.Host = contact.Address.Host;
             dialog.Port = contact.Address.Port;
-            dialog.Nick = contact.Nick;
-
             if (dialog.ShowDialog(MainForm) == DialogResult.OK)
             {
-                contact.Nick = dialog.Nick != "" ? dialog.Nick : (dialog.Host != "" ? dialog.Host : "Unnamed");
+                contact.Nick = dialog.Host != "" ? dialog.Host :  "Unnamed";
                 string host = dialog.Host;
                 int port = dialog.Port;
                 string guid = dialog.Guid;
@@ -354,7 +338,7 @@ namespace DennyTalk
                 }
                 contact.Address = new Address(host, port, guid);
                 e.ContactInfo.Address = new Address(host, port, guid);
-                e.ContactInfo.Nick = dialog.Nick;
+                e.ContactInfo.Nick = contact.Nick;
             }
         }
 
@@ -376,20 +360,14 @@ namespace DennyTalk
                 messanger.UpdateServerHost = dialog.UpdateServerHost;
                 
             }
-
             dialog.CheckUpdates -= dialog_CheckUpdates;
-
         }
 
         void dialog_CheckUpdates(object sender, EventArgs e)
         {
             if (CheckUpdates != null)
-            {
                 CheckUpdates(sender, e);
-            }
         }
-
-        public event EventHandler CheckUpdates;
 
 
         void DialogForm_MessageSend(object sender, MessageSendEventArgs e)
@@ -457,24 +435,16 @@ namespace DennyTalk
             AddChangeContactDialog dialog = new AddChangeContactDialog();
             if (dialog.ShowDialog(MainForm) == DialogResult.OK)
             {
-                contact.Nick = dialog.Nick != "" ? dialog.Nick : (dialog.Host != "" ? dialog.Host : "Unnamed");
-
+                contact.Nick = dialog.Host != "" ? dialog.Host : "Unnamed";
                 string host = dialog.Host;
                 int port = dialog.Port;
                 string guid = dialog.Guid;
-
                 if (string.IsNullOrEmpty(host))
                 {
                     host = messanger.ServerHost;
                     port = messanger.ServerPort;
                 }
-                else if (port == 0)
-                {
-                    port = 1000;
-                }
-
                 contact.Address = new Address(host, port, guid);
-
                 contact.Avatar = ImageHelper2.DefaultAvatar;
                 if (contactManager.AddContact(contact))
                     messanger.TelegramListener.RequestUserInfo(contact.Address);
