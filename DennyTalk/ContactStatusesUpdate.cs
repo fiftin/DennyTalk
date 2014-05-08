@@ -39,14 +39,10 @@ namespace DennyTalk
                     contact.Tag.Add("LastReceivedTelegramTime", now);
                     obj = now;
                 }
-
                 lastReceivedTelegramTime = (DateTime)obj;
-
                 TimeSpan d = DateTime.Now - lastReceivedTelegramTime;
                 if (d.TotalSeconds > 10 && contact.Status != UserStatus.Offline)
-                {
                     contact.Status = UserStatus.Offline;
-                }
             }
         }
 
@@ -54,9 +50,7 @@ namespace DennyTalk
         {
             Contact[] contacts = contactManager.GetContacts();
             foreach (Contact contact in contacts)
-            {
                 telegramListener.SendStatus(contact.Address, account.Status, account.StatusText);
-            }
         }
 
         private void DoWork()
@@ -64,9 +58,7 @@ namespace DennyTalk
             while (true)
             {
                 UpdateContactStatuses();
-
                 SendStatusToContact();
-
                 Thread.Sleep(1000);
             }
         }

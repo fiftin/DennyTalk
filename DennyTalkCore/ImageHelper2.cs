@@ -15,7 +15,7 @@ namespace DennyTalk
         {
             get
             {
-                return DennyTalkCore.Properties.Resources.question_c;
+                return DennyTalk.Properties.Resources.question_c;
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.IO;
 
 namespace Common
 {
@@ -55,6 +56,13 @@ namespace Common
             Buffer.BlockCopy(buf2, 0, bytes, buf1.Length, buf2.Length);
             return bytes;
         }
+
+        public static void WriteStructureToStream<T>(T structure, Stream stream) where T : struct
+        {
+            byte[] bytes = StructureToByteArray(structure);
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
         public static T ReadStructureFromStream<T>(System.IO.Stream stream) where T : struct
         {
             return ReadStructureFromStream<T>(stream, 60000);

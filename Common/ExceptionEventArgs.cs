@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Common
 {
-    public class ErrorEventArgs : EventArgs
+    public class ExceptionEventArgs : EventArgs
     {
-        public ErrorEventArgs(Exception error)
+        public ExceptionEventArgs(Exception error)
         {
             this.error = error;
         }

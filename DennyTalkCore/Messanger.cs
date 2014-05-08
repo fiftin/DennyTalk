@@ -14,18 +14,19 @@ namespace DennyTalk
         private Account account = new Account();
         private ContactManager contactManager = new ContactManager();
         private ICommunicationClient client;
-
         private Thread threadListener;
-
         private IStorage contactStorage;
         private IStorage accountStorage;
         private IStorage optionStorage;
         private History history;
         private string imegesPath = "";
-
         private int serverPort;
         private string serverHost;
         private string updateServerHost;
+        private FileReceiver fileReceiver;
+        private FileSender fileSender;
+
+        public delegate void Procedure0();
 
         public string UpdateServerHost
         {
@@ -97,12 +98,9 @@ namespace DennyTalk
             this.contactStorage = contactStorage;
             this.accountStorage = accountStorage;
             this.optionStorage = optionStorage;
-
             history = new History();
-
             threadListener = new Thread(threadListener_DoListen);
             threadListener.IsBackground = true;
-            
         }
 
         private void threadListener_DoListen()
@@ -126,6 +124,9 @@ namespace DennyTalk
             telegramListener.UserInfoRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserInfoRequest);
             telegramListener.UserStatusRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserStatusRequest);
             telegramListener.MessageReceived += new EventHandler<MessageReceivedEventArgs>(telegramListener_MessageReceived);
+            telegramListener.FilePortRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_FilePortRequest);
+
+
             if (string.IsNullOrEmpty((string)optionStorage["ImegesPath"].Value))
             {
                 imegesPath = "images" + System.IO.Path.DirectorySeparatorChar;
@@ -133,9 +134,8 @@ namespace DennyTalk
                 optionStorage.Save();
             }
             else
-            {
                 imegesPath = (string)optionStorage["ImegesPath"].Value;
-            }
+
             string rootPath = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
             imegesPath = rootPath + System.IO.Path.DirectorySeparatorChar + imegesPath;
 
@@ -198,20 +198,13 @@ namespace DennyTalk
 
                 string avatarFileName1 = (string)node["AvatarFileName"].Value;
                 if (string.IsNullOrEmpty(avatarFileName1))
-                {
                     contact.Avatar = ImageHelper2.DefaultAvatar;
-                }
                 else
                 {
                     if (System.IO.File.Exists(imegesPath + avatarFileName1))
-                    {
                         contact.Avatar = new Bitmap(imegesPath + avatarFileName1);
-                    }
                     else
-                    {
                         contact.Avatar = ImageHelper2.DefaultAvatar;
-                    }
-
                 }
 
                 contact.Nick = (string)node["Nick"].Value;
@@ -239,6 +232,15 @@ namespace DennyTalk
             threadListener.Start();
         }
 
+        void telegramListener_FilePortRequest(object sender, RequestReceivedEventArgs e)
+        {
+            if (fileReceiver == null || fileReceiver.IsClosed)
+            {
+                fileReceiver = new FileReceiver("");
+                fileReceiver.Start();
+            }
+            telegramListener.SendFilePort(e.Address, fileReceiver.Port);
+        }
 
         void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
@@ -329,12 +331,7 @@ namespace DennyTalk
                         {
                             string avatarFileName = Guid.NewGuid().ToString() + ".bmp";
                             e.Contact.Avatar.Save(imegesPath + avatarFileName);
-
                             string oldFileName = (string)nodeForUpdate["AvatarFileName"].Value;
-
-                            //if (System.IO.File.Exists(imegesPath + oldFileName))
-                            //    System.IO.File.Delete(imegesPath + oldFileName);
-
                             nodeForUpdate["AvatarFileName"].Value = avatarFileName;
                         }
                         break;
@@ -406,8 +403,6 @@ namespace DennyTalk
             }
         }
 
-        public delegate void Procedure0();
-
         public void SendStatusToContactsAsync()
         {
             Procedure0 proc = SendStatusToContacts;
@@ -437,7 +432,6 @@ namespace DennyTalk
             proc.Invoke();
         }
 
-
         void telegramListener_UserStatusReceived(object sender, UserStatusReceivedEventArgs e)
         {
             Contact contact = contactManager.GetContactByAddress(e.Address);
@@ -460,20 +454,23 @@ namespace DennyTalk
                 contact.StatusText = e.StatusText;
                 if (!contact.Address.EqualIPAddress(e.Address)) // Это условие выполнятеся, когда контакт был найден по GUID.
                 {                                               // В этом случае нужно предупредить пользователя, что контакт с таким-то GUID изменил свой Host.
-                    
                     contact.Address = e.Address; 
-               
                 }
                 if (contact.Address.Guid != e.Address.Guid) // Это условие выполнятеся, когда контакт был найден по Host.
                 {
-
                     contact.Address = new Address(contact.Address, e.Address.Guid);
-
                 }
                 contact.Nick = e.Nick;
                 contact.Avatar = e.Avatar;
                 contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;
             }
+        }
+
+
+
+        public void SendFiles(Contact contact, string[] filenames)
+        {
+            fileSender.Send(contact.Address, filenames);
         }
 
     }

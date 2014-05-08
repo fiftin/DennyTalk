@@ -8,7 +8,7 @@
     <ProjectGuid>{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DennyTalkCore</RootNamespace>
+    <RootNamespace>DennyTalk</RootNamespace>
     <AssemblyName>DennyTalkCore</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -43,6 +43,7 @@
     <Compile Include="Address.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="ContactManager.cs" />
+    <Compile Include="FileReceiver.cs" />
     <Compile Include="History.cs" />
     <Compile Include="HistoryMessage.cs" />
     <Compile Include="ICommunicationClient.cs" />
@@ -50,7 +51,6 @@
     <Compile Include="IPropertyChangeNotifier.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="IStorageNode.cs" />
-    <Compile Include="MemoryHelper.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageDeliveredEventArgs.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />

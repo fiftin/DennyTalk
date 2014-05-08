@@ -9,6 +9,8 @@ namespace DennyTalk
     public class UDPClient : ICommunicationClient
     {
         private int port;
+        private UdpClient client;
+        private UdpClient outputClient;
 
         public void Send(byte[] telegramData, Address address)
         {
@@ -19,7 +21,6 @@ namespace DennyTalk
         public byte[] Receive(out IPEndPoint address)
         {
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
-           
             byte[] bytes = client.Receive(ref remoteEP);
             address = remoteEP;
             return bytes;
@@ -49,8 +50,5 @@ namespace DennyTalk
             client.Close();
             client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
         }
-
-        private UdpClient client;
-        private UdpClient outputClient;
     }
 }

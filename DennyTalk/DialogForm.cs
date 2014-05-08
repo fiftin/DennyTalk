@@ -368,5 +368,10 @@ namespace DennyTalk
             WinFormsHelper.StopBlinking(this);
             ResetPageImage();
         }
+
+        private void btnSendFile_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

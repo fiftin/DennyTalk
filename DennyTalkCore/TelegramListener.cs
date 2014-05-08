@@ -7,9 +7,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Drawing;
 using System.IO;
+using Common;
 
 namespace DennyTalk
 {
+    /// <summary>
+    /// Тип телеграммы.
+    /// </summary>
     public enum TelegramHeaderType : int
     {
         Message = 0,
@@ -17,7 +21,9 @@ namespace DennyTalk
         UserStatus = 2,
         MessageDelivered = 3,
         UserInfoRequest = 4,
-        UserStatusRequest = 5
+        UserStatusRequest = 5,
+        FilePortRequest = 6,
+        FilePort = 7,
     }
 
     [StructLayout(LayoutKind.Explicit, CharSet=CharSet.Ansi, Pack=2)]
@@ -39,6 +45,9 @@ namespace DennyTalk
         public int port;
     }
 
+    /// <summary>
+    /// Информация о пользователе.
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
     public struct UserInfo
     {
@@ -56,18 +65,31 @@ namespace DennyTalk
 
         [FieldOffset(40 + 4 * (ImageHelper2.AvatarWidth * ImageHelper2.AvatarHeight) + 2000)]
         public int status;
-
     }
 
+    /// <summary>
+    /// Статус пользователя.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct UserStatusSturct
     {
         public int status;
-
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1000)]
         public string statusText;
     }
 
+    /// <summary>
+    /// Статус пользователя.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct FilePort
+    {
+        public int port;
+    }
+
+    /// <summary>
+    /// Подтверждение получения сообщения.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct TelegramDelivery
     {
@@ -128,6 +150,66 @@ namespace DennyTalk
 
     public class TelegramListener
     {
+
+        private class ResponceWaiter
+        {
+            public bool Wait()
+            {
+                if (setted)
+                    throw new Exception();
+                if (closed)
+                    throw new Exception();
+                return locker.WaitOne(2000, false);
+            }
+
+            public byte[] Data
+            {
+                get { return data; }
+                set { data = value; }
+            }
+
+            bool IsClosed
+            {
+                get
+                {
+                    return closed;
+                }
+            }
+
+            bool IsSetted
+            {
+                get
+                {
+                    return setted;
+                }
+            }
+
+            public void Close()
+            {
+                if (!setted)
+                    locker.Set();
+                locker.Close();
+                setted = true;
+                closed = true;
+            }
+
+            public void Set()
+            {
+                if (setted)
+                    throw new Exception();
+                if (closed)
+                    throw new Exception();
+                locker.Set();
+                setted = true;
+            }
+
+            private byte[] data;
+            private bool setted = false;
+            private bool closed = false;
+            private ManualResetEvent locker = new ManualResetEvent(false);
+        }
+
+
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         public event EventHandler<MessageDeliveredEventArgs> MessageDelivered;
@@ -140,7 +222,10 @@ namespace DennyTalk
 
         public event EventHandler<RequestReceivedEventArgs> UserStatusRequest;
 
+        public event EventHandler<RequestReceivedEventArgs> FilePortRequest;
+
         public event EventHandler<TelegramReceivedEventArgs> TelegramReceived;
+
 
         private int lastID = 1000;
 
@@ -212,14 +297,6 @@ namespace DennyTalk
             header.toGuid = address.Guid;
             header.fromGuid = guid;
             header.port = client.Port;
-            /*
-            byte[] headerBytes = MemoryHelper.StructureToByteArray(header);
-            byte[] telegramBytes = new byte[headerBytes.Length + header.dataSize];
-            Buffer.BlockCopy(headerBytes, 0, telegramBytes, 0, headerBytes.Length);
-            Buffer.BlockCopy(data, 0, telegramBytes, headerBytes.Length, data.Length);
-            client.Send(telegramBytes, address);
-            return new TelegramSendResult(header.id);
-             */
             return Send(header, address, data);
         }
 
@@ -267,15 +344,10 @@ namespace DennyTalk
                 }
 
                 int headerSize = Marshal.SizeOf(typeof(TelegramHeader));
-
-                //Console.WriteLine("headerSize:{0} telegramBytes:{1}" + Environment.NewLine, headerSize, telegramBytes.Length);
-                //File.AppendAllText("log.txt", string.Format("headerSize:{0} telegramBytes:{1}" + Environment.NewLine, headerSize, telegramBytes.Length));
-                
                 TelegramHeader header = MemoryHelper.ByteArrayToStructure<TelegramHeader>(telegramBytes, 0, headerSize);
                 byte[] data = new byte[telegramBytes.Length - headerSize];
                 Buffer.BlockCopy(telegramBytes, headerSize, data, 0, data.Length);
                 Address address = new Address(remoteEP.Address.ToString(), header.port, header.fromGuid);
-
                 OnTelegramReceived(header, address, data);
             }
         }
@@ -288,10 +360,9 @@ namespace DennyTalk
                 waiter.Data = data;
                 waiter.Set();
             }
+
             if (TelegramReceived != null)
-            {
                 TelegramReceived(this, new TelegramReceivedEventArgs(header, address, data));
-            }
 
             switch ((TelegramHeaderType)header.type)
             {
@@ -314,6 +385,10 @@ namespace DennyTalk
                 case TelegramHeaderType.UserStatus:
                     OnUserStatusReceived(header, address, data);
                     break;
+                case TelegramHeaderType.FilePortRequest:
+                    if (FilePortRequest != null)
+                        FilePortRequest(this, new RequestReceivedEventArgs(address));
+                    break;
             }
         }
 
@@ -326,9 +401,7 @@ namespace DennyTalk
                 Bitmap bitmap = ImageHelper2.IntArrayToAvatar(info.avatar);
                 UserInfoReveivedEventArgs e = new UserInfoReveivedEventArgs(info.nick, bitmap, (UserStatus)info.status, info.statusText, address);
                 if (UserInfoReceived != null)
-                {
                     UserInfoReceived(this, e);
-                }
             }
         }
 
@@ -336,25 +409,19 @@ namespace DennyTalk
         {
             UserStatusSturct userStatus = MemoryHelper.ByteArrayToStructure<UserStatusSturct>(data);
             if (UserStatusReceived != null)
-            {
                 UserStatusReceived(this, new UserStatusReceivedEventArgs(address, (UserStatus)userStatus.status, userStatus.statusText));
-            }
         }
 
         protected virtual void OnUserStatusRequest(TelegramHeader header, Address address)
         {
             if (UserStatusRequest != null)
-            {
                 UserStatusRequest(this, new RequestReceivedEventArgs(address));
-            }
         }
 
         protected virtual void OnUserInfoRequest(TelegramHeader header, Address address)
         {
             if (UserInfoRequest != null)
-            {
                 UserInfoRequest(this, new RequestReceivedEventArgs(address));
-            }
         }
 
         protected virtual void OnMessageDelivered(TelegramHeader header, Address address, byte[] bytes)
@@ -381,13 +448,9 @@ namespace DennyTalk
             try
             {
                 if (responceWaiter.Wait())
-                {
                     responce = responceWaiter.Data;
-                }
                 else
-                {
                     responce = null;
-                }
             }
             finally
             {
@@ -396,64 +459,16 @@ namespace DennyTalk
             return result;
         }
 
-        private class ResponceWaiter
+        public void SendFilePort(Address address, int port)
         {
-            public bool Wait()
-            {
-                if (setted)
-                    throw new Exception();
-                if (closed)
-                    throw new Exception();
-                return locker.WaitOne(2000, false);
-            }
-
-            public byte[] Data
-            {
-                get { return data; }
-                set { data = value; }
-            }
-
-            bool IsClosed
-            {
-                get
-                {
-                    return closed;
-                }
-            }
-
-            bool IsSetted
-            {
-                get
-                {
-                    return setted;
-                }
-            }
-
-            public void Close()
-            {
-                if(!setted)
-                    locker.Set();
-                locker.Close();
-                setted = true;
-                closed = true;
-            }
-
-            public void Set()
-            {
-                if (setted)
-                    throw new Exception();
-                if (closed)
-                    throw new Exception();
-                locker.Set();
-                setted = true;
-            }
-
-            private byte[] data;
-            private bool setted = false;
-            private bool closed = false;
-            private ManualResetEvent locker = new ManualResetEvent(false);
+            FilePort d = new FilePort();
+            d.port = port;
+            Send(address, d);
         }
 
+        /// <summary>
+        /// Отправляет статус пользователю.
+        /// </summary>
         public void SendStatus(Address address, UserStatus userStatus, string statusText)
         {
             UserStatusSturct status = new UserStatusSturct();
@@ -462,16 +477,23 @@ namespace DennyTalk
             Send(address, status);
         }
 
+        /// <summary>
+        /// Отправить информацию пользователю.
+        /// </summary>
         public void SendInfo(Address address, Bitmap avatar, string nick, UserStatus status, string statusText)
         {
             int[] avatarPixels = ImageHelper2.AvatarToIntArray(avatar);
-
             UserInfo userInfo = new UserInfo();
             userInfo.avatar = avatarPixels;
             userInfo.nick = nick;
             userInfo.status = (int)status;
             userInfo.statusText = statusText;
             Send(address, userInfo);
+        }
+
+        internal void RequestFilePort(Address address)
+        {
+            Send(address, new byte[0], TelegramHeaderType.FilePortRequest);
         }
     }
 }
