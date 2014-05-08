@@ -16,6 +16,7 @@ namespace DennyTalk
         private ContactInfo contactInfo;
         private BindingList<Message> messages = new BindingList<Message>();
         public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
+        private Color evenMessageBackColor = Color.FromArgb(255, 240, 240, 240);
 
         public DialogUserControl()
         {
@@ -65,11 +66,10 @@ namespace DennyTalk
 
             if (o == 0)
             {
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0].Style.BackColor = Color.LightGray;
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[1].Style.BackColor = Color.LightGray;
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = Color.LightGray;
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0].Style.BackColor = evenMessageBackColor;
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[1].Style.BackColor = evenMessageBackColor;
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = evenMessageBackColor;
             }
-
         }
 
         public ContactInfo UserInfo
@@ -179,6 +179,7 @@ namespace DennyTalk
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = oldValue;
+                copyToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
             }
         }
 
@@ -189,6 +190,7 @@ namespace DennyTalk
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
                 oldValue = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                copyToolStripMenuItem.ShortcutKeys = Keys.None;
             }
         }
     }
