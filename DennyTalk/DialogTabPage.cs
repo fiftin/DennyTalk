@@ -10,6 +10,8 @@ namespace DennyTalk
 {
     public partial class DialogTabPage : TabPage
     {
+        private ContactInfo contactInfo;
+
         public DialogTabPage()
         {
             InitializeComponent();
@@ -29,8 +31,6 @@ namespace DennyTalk
                     break;
             }
         }
-
-        private ContactInfo contactInfo;
 
         public ContactInfo UserInfo
         {
@@ -87,13 +87,5 @@ namespace DennyTalk
             get { return this.dialogUserControl1; }
         }
 
-
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            // TODO: Add custom paint code here
-
-            // Calling the base class OnPaint
-            base.OnPaint(pe);
-        }
     }
 }

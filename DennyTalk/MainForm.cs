@@ -434,7 +434,7 @@ namespace DennyTalk
             WinFormsPopupAlerts.Alert alert;
             if (cont == null)
             {
-                alert = popupAlertManager1.Alert(new TooltipAlertArg(address.IPAddress.ToString(), message.Text, ImageHelper2.DefaultAvatar));
+                alert = popupAlertManager1.Alert(new TooltipAlertArg(address.IP.ToString(), message.Text, ImageHelper2.DefaultAvatar));
             }
             else
             {

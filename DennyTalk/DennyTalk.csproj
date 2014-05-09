@@ -124,6 +124,7 @@
     <Compile Include="DialogUserControl.Designer.cs">
       <DependentUpon>DialogUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="FilesSendEventArgs.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

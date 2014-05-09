@@ -43,7 +43,9 @@
     <Compile Include="Address.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="ContactManager.cs" />
+    <Compile Include="FilePortReceivedEventArgs.cs" />
     <Compile Include="FileReceiver.cs" />
+    <Compile Include="FileSender.cs" />
     <Compile Include="History.cs" />
     <Compile Include="HistoryMessage.cs" />
     <Compile Include="ICommunicationClient.cs" />

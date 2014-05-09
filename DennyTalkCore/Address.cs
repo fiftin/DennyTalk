@@ -10,6 +10,8 @@ namespace DennyTalk
         private int port;
         private string host;
         private string guid;
+        private IPHostEntry hostEntry;
+        private bool hostEntryIsNull;
 
         public Address(IPEndPoint endPoint)
         {
@@ -46,8 +48,6 @@ namespace DennyTalk
             get { return port; }
         }
 
-        private IPHostEntry hostEntry;
-        private bool hostEntryIsNull;
 
         public IPAddress[] Addresses
         {
@@ -82,10 +82,7 @@ namespace DennyTalk
         public bool Equals(Address other)
         {
             return !string.IsNullOrEmpty(Guid) && !string.IsNullOrEmpty(other.Guid) && Guid == other.Guid 
-                || EqualIPAddress(other)
-                //|| IPAddress.Equals(other.IPAddress)
-                //|| Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
-                ;
+                || EqualIPAddress(other);
         }
 
         public bool EqualIPAddress(Address other)
@@ -103,10 +100,10 @@ namespace DennyTalk
                 }
             }
             eq = eq
-                || Array.Exists(other.Addresses, x => x.Equals(IPAddress))
-                || Array.Exists(Addresses, x => x.Equals(other.IPAddress))
+                || Array.Exists(other.Addresses, x => x.Equals(IP))
+                || Array.Exists(Addresses, x => x.Equals(other.IP))
                 || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
-                || IPAddress.Equals(other.IPAddress) 
+                || IP.Equals(other.IP) 
                 || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
                 ;
             if (eq && Port == other.Port)
@@ -116,18 +113,25 @@ namespace DennyTalk
             return false;
         }
 
-        public IPAddress IPAddress
+        public bool IsLocalHost
+        {
+            get
+            {
+                return Array.IndexOf(HostEntry.AddressList, IPAddress.Loopback) != -1;
+            }
+        }
+
+        public IPAddress IP
         {
             get
             {
                 IPAddress addr;
-                
                 if (IPAddress.TryParse(host, out addr))
                     return addr;
+                else if (IsLocalHost)
+                    return IPAddress.Loopback;
                 else
-                {
                     return HostEntry.AddressList[0];
-                }
             }
         }
 	

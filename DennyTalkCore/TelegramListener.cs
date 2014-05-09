@@ -85,6 +85,13 @@ namespace DennyTalk
     public struct FilePort
     {
         public int port;
+        public int requestId;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct FilePortRequest
+    {
+        public int numberOfFiles;
     }
 
     /// <summary>
@@ -226,6 +233,7 @@ namespace DennyTalk
 
         public event EventHandler<TelegramReceivedEventArgs> TelegramReceived;
 
+        public event EventHandler<FilePortReceivedEventArgs> FilePortReceived;
 
         private int lastID = 1000;
 
@@ -235,6 +243,9 @@ namespace DennyTalk
 
         private string guid = "";
 
+        /// <summary>
+        /// Глобавльный идентификатор пользователя.
+        /// </summary>
         public string Guid
         {
             get { return guid; }
@@ -262,21 +273,17 @@ namespace DennyTalk
         {
             TelegramHeaderType type;
             if (typeof(T) == typeof(UserInfo))
-            {
                 type = TelegramHeaderType.UserInfo;
-            }
             else if (typeof(T) == typeof(TelegramDelivery))
-            {
                 type = TelegramHeaderType.MessageDelivered;
-            }
             else if (typeof(T) == typeof(UserStatusSturct))
-            {
                 type = TelegramHeaderType.UserStatus;
-            }
+            else if (typeof(T) == typeof(FilePort))
+                type = TelegramHeaderType.FilePort;
+            else if (typeof(T) == typeof(FilePortRequest))
+                type = TelegramHeaderType.FilePortRequest;
             else
-            {
                 throw new Exception("T is unknown type");
-            }
             return Send(address, data, (int)type);
         }
 
@@ -286,11 +293,15 @@ namespace DennyTalk
             return Send(address, bytes, type);
         }
 
+        protected int NewID()
+        {
+            return lastID++;
+        }
+
         protected TelegramSendResult Send(Address address, byte[] data, int type)
         {
             TelegramHeader header = new TelegramHeader();
-            header.id = lastID;
-            lastID++;
+            header.id = NewID();
             header.type = type;
             header.dataSize = data.Length;
             byte[] guidBytes = Encoding.ASCII.GetBytes(address.Guid);
@@ -389,9 +400,14 @@ namespace DennyTalk
                     if (FilePortRequest != null)
                         FilePortRequest(this, new RequestReceivedEventArgs(address));
                     break;
+                case TelegramHeaderType.FilePort:
+                    if (FilePortReceived != null) {
+                        FilePort filePort = MemoryHelper.ByteArrayToStructure<FilePort>(data);
+                        FilePortReceived(this, new FilePortReceivedEventArgs(address, filePort.port, filePort.requestId));
+                    }
+                    break;
             }
         }
-
 
         protected virtual void OnUserInfoReceived(TelegramHeader header, Address address, byte[] data)
         {
@@ -438,7 +454,6 @@ namespace DennyTalk
             if (MessageReceived != null)
                 MessageReceived(this, e);
         }
-
 
         public TelegramSendResult SendSync(Address address, byte[] data, int type, out byte[] responce)
         {
@@ -491,7 +506,7 @@ namespace DennyTalk
             Send(address, userInfo);
         }
 
-        internal void RequestFilePort(Address address)
+        public void RequestFilePort(Address address)
         {
             Send(address, new byte[0], TelegramHeaderType.FilePortRequest);
         }

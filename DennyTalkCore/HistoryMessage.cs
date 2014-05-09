@@ -10,13 +10,39 @@ namespace DennyTalk
         Out
     }
 
+    public enum HistoryMessageType
+    {
+        Message,
+        Files
+    }
+
     public class HistoryMessage
     {
         private DateTime time;
         private string text;
+        private string[] filenames;
         private HistoryMessageDirection direction;
         private Address fromAddress;
         private int id;
+        private HistoryMessageType type;
+
+        public HistoryMessage(DateTime time, string text, HistoryMessageDirection direction, Address fromAddress, HistoryMessageType type)
+        {
+            this.time = time;
+            this.text = text;
+            this.direction = direction;
+            this.fromAddress = fromAddress;
+            this.type = type;
+        }
+
+        public HistoryMessage(DateTime time, string[] filenames, HistoryMessageDirection direction, Address fromAddress, HistoryMessageType type)
+        {
+            this.time = time;
+            this.filenames = filenames;
+            this.direction = direction;
+            this.fromAddress = fromAddress;
+            this.type = type;
+        }
 
         public int ID
         {
@@ -27,14 +53,6 @@ namespace DennyTalk
         public Address FromAddress
         {
             get { return fromAddress; }
-        }
-
-        public HistoryMessage(DateTime time, string text, HistoryMessageDirection direction, Address fromAddress)
-        {
-            this.time = time;
-            this.text = text;
-            this.direction = direction;
-            this.fromAddress = fromAddress;
         }
 
         public HistoryMessageDirection Direction

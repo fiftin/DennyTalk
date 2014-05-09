@@ -31,6 +31,7 @@ namespace DennyTalk
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnSendFile = new System.Windows.Forms.Button();
             this.btnSend = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -38,7 +39,7 @@ namespace DennyTalk
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToContactListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnSendFile = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -53,6 +54,20 @@ namespace DennyTalk
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(502, 65);
             this.panel1.TabIndex = 3;
+            // 
+            // btnSendFile
+            // 
+            this.btnSendFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSendFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSendFile.Location = new System.Drawing.Point(420, 34);
+            this.btnSendFile.Name = "btnSendFile";
+            this.btnSendFile.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.btnSendFile.Size = new System.Drawing.Size(79, 28);
+            this.btnSendFile.TabIndex = 2;
+            this.btnSendFile.Text = "Send &file";
+            this.btnSendFile.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSendFile.UseVisualStyleBackColor = true;
+            this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
             // 
             // btnSend
             // 
@@ -71,9 +86,9 @@ namespace DennyTalk
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox1.Location = new System.Drawing.Point(0, 3);
             this.textBox1.MaxLength = 2000;
@@ -140,19 +155,10 @@ namespace DennyTalk
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
-            // btnSendFile
+            // openFileDialog1
             // 
-            this.btnSendFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSendFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSendFile.Location = new System.Drawing.Point(420, 34);
-            this.btnSendFile.Name = "btnSendFile";
-            this.btnSendFile.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.btnSendFile.Size = new System.Drawing.Size(79, 28);
-            this.btnSendFile.TabIndex = 2;
-            this.btnSendFile.Text = "Send &file";
-            this.btnSendFile.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnSendFile.UseVisualStyleBackColor = true;
-            this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
+            this.openFileDialog1.Multiselect = true;
+            this.openFileDialog1.RestoreDirectory = true;
             // 
             // DialogForm
             // 
@@ -185,5 +191,6 @@ namespace DennyTalk
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Button btnSendFile;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

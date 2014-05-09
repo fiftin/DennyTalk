@@ -173,7 +173,7 @@ namespace DennyTalk
 
         void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            HistoryMessage histMessage = new HistoryMessage(DateTime.Now, e.Text, HistoryMessageDirection.In, e.Address);
+            HistoryMessage histMessage = new HistoryMessage(DateTime.Now, e.Text, HistoryMessageDirection.In, e.Address, HistoryMessageType.Message);
             histMessage.ID = e.ID;
 
             if (!DialogForm.Visible)
@@ -244,6 +244,7 @@ namespace DennyTalk
             dialogForm.FormClosing += new FormClosingEventHandler(dialogForm_FormClosing);
             dialogForm.ContactAdd += new EventHandler<ContactInfoEventArgs>(dialogForm_ContactAdd);
             dialogForm.ContactSelected += new EventHandler<ContactInfoEventArgs>(dialogForm_ContactSelected);
+            dialogForm.FilesSend += new EventHandler<FilesSendEventArgs>(dialogForm_FilesSend);
 
             DialogForm.Initialize();
         }
@@ -369,42 +370,46 @@ namespace DennyTalk
                 CheckUpdates(sender, e);
         }
 
+        protected void AddMessage(HistoryMessage msg, ContactInfo contectInfo)
+        {
+            DialogUserControl dialog = null;
+            if (!DialogForm.HasDialog(contectInfo.Address))
+                MainForm.Invoke(new MethodInvoker(delegate()
+                {
+                    dialog = DialogForm.AddDialog(contectInfo, new HistoryMessage[] { msg });
+                }));
+            else
+                MainForm.Invoke(new MethodInvoker(delegate()
+                {
+                    dialog = DialogForm.SelectDialog(contectInfo.Address);
+                }));
+            if (dialog != null)
+                dialog.AddMessage(msg);
+        }
+
+        void dialogForm_FilesSend(object sender, FilesSendEventArgs e)
+        {
+            int telegramId = messanger.SendFiles(ConvertToContact(e.ReceiverContectInfo), e.FileNames);
+            HistoryMessage msg = new HistoryMessage(DateTime.Now, string.Join("\n", e.FileNames), HistoryMessageDirection.Out, e.ReceiverContectInfo.Address, HistoryMessageType.Files);
+            msg.ID = telegramId;
+            AddMessage(msg, e.ReceiverContectInfo);
+        }
 
         void DialogForm_MessageSend(object sender, MessageSendEventArgs e)
         {
             TelegramSendResult result = telegramListener.SendMessage(e.Address, e.Text);
-
             e.ID = result.ID;
+            Contact contact = contactManager.GetContactByAddress(e.Address);
             ContactInfo contactInfo = new ContactInfo();
             contactInfo.Address = e.Address;
-
-            Contact contact = contactManager.GetContactByAddress(e.Address);
             if (contact != null)
             {
                 contactInfo.Nick = contact.Nick;
                 contactInfo.Avatar = contact.Avatar;
-
             }
-            HistoryMessage msg = new HistoryMessage(DateTime.Now, e.Text, HistoryMessageDirection.Out, e.Address);
+            HistoryMessage msg = new HistoryMessage(DateTime.Now, e.Text, HistoryMessageDirection.Out, e.Address, HistoryMessageType.Message);
             msg.ID = e.ID;
-
-            DialogUserControl dialog = null;
-            if (!DialogForm.HasDialog(e.Address))
-            {
-                MainForm.Invoke(new MethodInvoker(delegate()
-                {
-                    dialog = DialogForm.AddDialog(contactInfo, new HistoryMessage[] { msg });
-                }));
-            }
-            else
-            {
-                MainForm.Invoke(new MethodInvoker(delegate()
-                {
-                    dialog = DialogForm.SelectDialog(e.Address);
-                }));
-            }
-            if (dialog != null)
-                dialog.AddMessage(msg);
+            AddMessage(msg, contactInfo);
         }
 
         void MainForm_ContactDoubleClick(object sender, ContactInfoEventArgs e)

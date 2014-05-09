@@ -15,7 +15,7 @@ namespace DennyTalk
         public void Send(byte[] telegramData, Address address)
         {
             int sent = outputClient.Send(telegramData, telegramData.Length,
-                new System.Net.IPEndPoint(address.IPAddress, address.Port));
+                new System.Net.IPEndPoint(address.IP, address.Port));
         }
 
         public byte[] Receive(out IPEndPoint address)

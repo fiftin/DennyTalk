@@ -10,6 +10,13 @@ namespace DennyTalk
 {
     public partial class DialogForm : Form
     {
+        public event EventHandler<MessageSendEventArgs> MessageSend;
+        public event EventHandler<FilesSendEventArgs> FilesSend;
+
+        private Bitmap accountAvatar;
+        private string accountNick;
+        private Address accountAddress;
+
         public DialogForm()
         {
             InitializeComponent();
@@ -50,7 +57,6 @@ namespace DennyTalk
         {
             ResetPageImage();
         }
-
 
         public bool HasDialog(Address address)
         {
@@ -175,6 +181,14 @@ namespace DennyTalk
                 page.ImageIndex = (int)((DialogTabPage)page).Dialog.UserInfo.Status;
         }
 
+        private void SendFiles()
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (FilesSend != null)
+                    FilesSend(this, new FilesSendEventArgs(openFileDialog1.FileNames, ((DialogTabPage)tabControl1.SelectedTab).UserInfo));
+            }
+        }
 
         private void SendMessage()
         {
@@ -182,23 +196,13 @@ namespace DennyTalk
             {
                 if (textBox1.Text == "")
                     return;
-
                 MessageSendEventArgs e = new MessageSendEventArgs(textBox1.Text,
                     ((DialogTabPage)tabControl1.SelectedTab).UserInfo.Address);
                 MessageSend(this, e);
                 if (e.ID > 0)
                     textBox1.Text = "";
-                else
-                {
-                }
-            }
-            else
-            {
             }
         }
-
-
-        public event EventHandler<MessageSendEventArgs> MessageSend;
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -233,14 +237,6 @@ namespace DennyTalk
             }
             this.tabControl1.TabPages.Clear();
         }
-
-
-
-
-        private Bitmap accountAvatar;
-        private string accountNick;
-        private Address accountAddress;
-
 
         public Address AccountAddress
         {
@@ -301,9 +297,6 @@ namespace DennyTalk
                 this.contextMenuStrip1.Show(Cursor.Position);
             }
         }
-
-        public event EventHandler<ContactInfoEventArgs> ContactAdd;
-        public event EventHandler<ContactInfoEventArgs> ContactSelected;
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -371,7 +364,10 @@ namespace DennyTalk
 
         private void btnSendFile_Click(object sender, EventArgs e)
         {
-
+            SendFiles();
         }
+
+        public event EventHandler<ContactInfoEventArgs> ContactAdd;
+        public event EventHandler<ContactInfoEventArgs> ContactSelected;
     }
 }
