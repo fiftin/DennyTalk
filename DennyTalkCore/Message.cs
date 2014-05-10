@@ -14,7 +14,7 @@ namespace DennyTalk
         private string senderNick;
         private Bitmap senderImage;
         private Address senderAddress;
-        private  HistoryMessageDirection direction;
+        private HistoryMessageDirection direction;
         private bool delivered;
 
         public bool Delivered

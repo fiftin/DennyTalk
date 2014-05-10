@@ -11,7 +11,7 @@ namespace DennyTalk
         protected override void Paint(System.Drawing.Graphics graphics, System.Drawing.Rectangle clipBounds, System.Drawing.Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
             Message msg = (Message)DataGridView.Rows[rowIndex].DataBoundItem;
-
+            
             base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
 
             Brush br = msg.Direction == HistoryMessageDirection.In ? Brushes.Blue : Brushes.Red;

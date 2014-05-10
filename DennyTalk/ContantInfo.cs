@@ -9,17 +9,23 @@ namespace DennyTalk
     public class ContactInfo : INotifyPropertyChanged, IPropertyChangeNotifier
     {
         private string nick;
-        private UserStatus status;
         private string statusText;
         private Address address;
+        private UserStatus status;
         private Bitmap avatar;
         private Bitmap statusImage;
         private Bitmap avatarSmall;
+        private IDictionary<string, object> tag = new Dictionary<string, object>();
 
         public ContactInfo()
         {
             status = UserStatus.Offline;
             statusImage = ImageHelper.GetUserStatusImage(UserStatus.Offline);
+        }
+
+        public IDictionary<string, object> Tag
+        {
+            get { return tag; }
         }
 
         public Address Address
@@ -136,24 +142,15 @@ namespace DennyTalk
         public virtual void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             if (PropertyChange != null)
-            {
                 PropertyChange(this, new PropertyChangeNotifierEventArgs(propertyName, oldValue, newValue));
-            }
             NotifyPropertyChanged(propertyName);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
-
 
         public Bitmap InfoImage
         {
@@ -178,5 +175,9 @@ namespace DennyTalk
                 return ImageHelper.ContactRemoveImage;
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
+
     }
 }

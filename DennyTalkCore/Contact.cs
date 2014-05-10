@@ -7,12 +7,11 @@ namespace DennyTalk
 {
     public class Contact : System.ComponentModel.INotifyPropertyChanged, IPropertyChangeNotifier
     {
-        private Address address;
         private string nick;
-        private UserStatus status;
         private string statusText;
+        private Address address;
+        private UserStatus status;
         private Bitmap avatar;
-
         private IDictionary<string, object> tag = new Dictionary<string, object>();
 
         public IDictionary<string, object> Tag
@@ -97,22 +96,17 @@ namespace DennyTalk
         protected virtual void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-            {
                 PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
         }
 
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             if (PropertyChange != null)
-            {
                 PropertyChange(this, new PropertyChangeNotifierEventArgs(propertyName, oldValue, newValue));
-            }
             NotifyPropertyChanged(propertyName);
         }
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
         public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
 
     }
