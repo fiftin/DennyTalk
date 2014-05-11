@@ -34,7 +34,7 @@ namespace DennyTalk
             return null;
         }
 
-        public DialogUserControl AddDialog(ContactInfo contactInfo, IEnumerable<HistoryMessage> messages)
+        public DialogUserControl AddDialog(ContactEx contactInfo, IEnumerable<Message> messages)
         {
             DialogTabPage page = new DialogTabPage();
             page.UserInfo = contactInfo;
@@ -70,7 +70,7 @@ namespace DennyTalk
             return false;
         }
 
-        public bool HasDialog(ContactInfo contactInfo)
+        public bool HasDialog(ContactEx contactInfo)
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
@@ -97,7 +97,7 @@ namespace DennyTalk
             return null;
         }
 
-        public DialogUserControl SelectDialog(ContactInfo contactInfo)
+        public DialogUserControl SelectDialog(ContactEx contactInfo)
         {
             foreach (DialogTabPage page in tabControl1.TabPages)
             {
@@ -112,7 +112,7 @@ namespace DennyTalk
             return null;
         }
 
-        void SetText(ContactInfo user)
+        void SetText(ContactEx user)
         {
             if (string.IsNullOrEmpty(user.Nick))
                 Text = user.Address.Host;
@@ -136,7 +136,7 @@ namespace DennyTalk
             textBox1.Focus();
             if (tabControl1.SelectedTab != null)
             {
-                ContactInfo user = ((DialogTabPage)tabControl1.SelectedTab).UserInfo;
+                ContactEx user = ((DialogTabPage)tabControl1.SelectedTab).UserInfo;
                 SetText(user);
                 if (ContactSelected != null)
                 {
@@ -263,7 +263,7 @@ namespace DennyTalk
 
         }
 
-        protected virtual void OnContactAdd(ContactInfo user)
+        protected virtual void OnContactAdd(ContactEx user)
         {
             if (ContactAdd != null)
             {

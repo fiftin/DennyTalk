@@ -10,7 +10,7 @@ namespace DennyTalk
 {
     public partial class ContactListUserControl : UserControl
     {
-        BindingList<ContactInfo> contacts = new BindingList<ContactInfo>();
+        BindingList<ContactEx> contacts = new BindingList<ContactEx>();
         BindingSource contactsBindingSource = new BindingSource();
         public ContactListUserControl()
         {
@@ -24,9 +24,9 @@ namespace DennyTalk
         /// 
         /// </summary>
         /// <param name="contacts"></param>
-        public void AddContacts(IEnumerable<ContactInfo> contacts)
+        public void AddContacts(IEnumerable<ContactEx> contacts)
         {
-            foreach (ContactInfo contact in contacts)
+            foreach (ContactEx contact in contacts)
             {
                 this.contacts.Add(contact);
                 contact.PropertyChanged += new PropertyChangedEventHandler(contact_PropertyChanged);
@@ -35,7 +35,7 @@ namespace DennyTalk
 
         void contact_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ContactInfo cont = (ContactInfo)sender;
+            ContactEx cont = (ContactEx)sender;
             if (e.PropertyName == "StatusText")
             {
                 cont.NotifyPropertyChanged("Nick");
@@ -44,9 +44,9 @@ namespace DennyTalk
 
 
 
-        public ContactInfo GetContactByAddress(Address address)
+        public ContactEx GetContactByAddress(Address address)
         {
-            foreach (ContactInfo cont in contacts)
+            foreach (ContactEx cont in contacts)
             {
                 if (cont.Address.Equals(address))
                     return cont;
@@ -56,11 +56,11 @@ namespace DennyTalk
 
         private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            ContactInfo contactInfo = (ContactInfo)dataGridView1.Rows[e.RowIndex].DataBoundItem;
+            ContactEx contactInfo = (ContactEx)dataGridView1.Rows[e.RowIndex].DataBoundItem;
             OnContactDoubleClick(contactInfo);
         }
 
-        private void OnContactDoubleClick(ContactInfo contactInfo)
+        private void OnContactDoubleClick(ContactEx contactInfo)
         {
             if (ContactDoubleClick != null)
             {
@@ -75,7 +75,7 @@ namespace DennyTalk
 
         private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            ContactInfo contactInfo = (ContactInfo)dataGridView1.Rows[e.RowIndex].DataBoundItem;
+            ContactEx contactInfo = (ContactEx)dataGridView1.Rows[e.RowIndex].DataBoundItem;
             switch (e.ColumnIndex)
             {
                 case 3: // Show info
@@ -90,19 +90,19 @@ namespace DennyTalk
             }
         }
 
-        private void OnContactRemoveRequest(ContactInfo contactInfo)
+        private void OnContactRemoveRequest(ContactEx contactInfo)
         {
             if(ContactRemoveRequest!=null)
                 ContactRemoveRequest(this, new ContactInfoEventArgs(contactInfo));
         }
 
-        private void OnContactEditRequest(ContactInfo contactInfo)
+        private void OnContactEditRequest(ContactEx contactInfo)
         {
             if(ContactEditRequest!=null)
                 ContactEditRequest(this, new ContactInfoEventArgs(contactInfo));
         }
 
-        private void OnContactShowInfoRequest(ContactInfo contactInfo)
+        private void OnContactShowInfoRequest(ContactEx contactInfo)
         {
             if (ContactShowInfoRequest != null)
                 ContactShowInfoRequest(this, new ContactInfoEventArgs(contactInfo));
@@ -137,7 +137,7 @@ namespace DennyTalk
 
         internal void RemoveContactByAddress(Address address)
         {
-            ContactInfo cont = GetContactByAddress(address);
+            ContactEx cont = GetContactByAddress(address);
             contacts.Remove(cont);
             
         }

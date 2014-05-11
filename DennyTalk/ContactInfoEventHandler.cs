@@ -6,13 +6,13 @@ namespace DennyTalk
 {
     public class ContactInfoEventArgs : EventArgs
     {
-        public ContactInfoEventArgs(ContactInfo contactInfo)
+        public ContactInfoEventArgs(ContactEx contactInfo)
         {
             this.contactInfo = contactInfo;
         }
 
-        private ContactInfo contactInfo;
-        public ContactInfo ContactInfo
+        private ContactEx contactInfo;
+        public ContactEx ContactInfo
         {
             get { return contactInfo; }
         }

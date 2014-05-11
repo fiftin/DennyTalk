@@ -10,7 +10,7 @@ namespace DennyTalk
 {
     public partial class DialogTabPage : TabPage
     {
-        private ContactInfo contactInfo;
+        private ContactEx contactInfo;
 
         public DialogTabPage()
         {
@@ -32,7 +32,7 @@ namespace DennyTalk
             }
         }
 
-        public ContactInfo UserInfo
+        public ContactEx UserInfo
         {
             get { return contactInfo; }
             set

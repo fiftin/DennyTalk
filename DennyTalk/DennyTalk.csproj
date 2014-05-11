@@ -106,7 +106,7 @@
       <DependentUpon>ContactListUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ContactStatusesUpdate.cs" />
-    <Compile Include="ContantInfo.cs" />
+    <Compile Include="ContantEx.cs" />
     <Compile Include="DataGridViewDialogMessageCell.cs" />
     <Compile Include="DataGridViewDialogMessageColumn.cs" />
     <Compile Include="DialogManager.cs" />
@@ -201,7 +201,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SendMessageCommunicationClient.cs" />
-    <Compile Include="UserListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Updater.exe">

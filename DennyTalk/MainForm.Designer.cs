@@ -81,9 +81,7 @@ namespace DennyTalk
             this.notifyIcon1.Text = "DennyTalk";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.BalloonTipClicked += new System.EventHandler(this.notifyIcon1_BalloonTipClicked);
-            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
             this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
-            this.notifyIcon1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDown);
             // 
             // contextMenuStrip2
             // 
@@ -283,7 +281,6 @@ namespace DennyTalk
             this.picAvatar.Size = new System.Drawing.Size(50, 50);
             this.picAvatar.TabIndex = 0;
             this.picAvatar.TabStop = false;
-            this.picAvatar.Click += new System.EventHandler(this.picAvatar_Click);
             this.picAvatar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picAvatar_MouseDown);
             // 
             // pnlStatusText

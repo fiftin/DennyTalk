@@ -16,11 +16,16 @@ namespace DennyTalk
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
     public struct AuthFileTransfering
     {
+        //[FieldOffset(0)]
+        //public int port;
+
         [FieldOffset(0)]
-        public int port;
+        public int numberOfFiles;
+
         [FieldOffset(4)]
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 40)]
         public string guid;
+
     }
 
     /// <summary>
@@ -81,6 +86,7 @@ namespace DennyTalk
         {
             Client = client;
             Thread = new Thread(Thread_DoReceive);
+            Thread.Name = "FileReceiverClientThread";
             Thread.IsBackground = true;
             PathForSave = pathForSave;
             Thread.Start();
@@ -101,11 +107,12 @@ namespace DennyTalk
                 var stream = Client.GetStream();
                 AuthFileTransfering auth = MemoryHelper.ReadStructureFromStream<AuthFileTransfering>(stream);
                 OnAuth(auth.guid);
-                while (true)
+                int numberOfDownloadedFiles = 0;
+                while (numberOfDownloadedFiles < auth.numberOfFiles)
                 {
                     TransferedFileInfo fileInfo = MemoryHelper.ReadStructureFromStream<TransferedFileInfo>(stream);
                     OnDownloadStart(fileInfo.filename);
-                    using (FileStream outStream = File.OpenWrite(PathForSave + Path.PathSeparator + fileInfo.filename))
+                    using (FileStream outStream = File.OpenWrite(PathForSave + Path.DirectorySeparatorChar + fileInfo.filename))
                     {
                         int totalRead = 0;
                         byte[] buffer = new byte[1000];
@@ -113,7 +120,7 @@ namespace DennyTalk
                         {
                             int n = (int)Math.Min(buffer.LongLength, fileInfo.size - totalRead);
                             int read = stream.Read(buffer, 0, n);
-                            if (read == -1)
+                            if (read == 0)
                                 break;
                             totalRead += read;
                             outStream.Write(buffer, 0, read);
@@ -121,6 +128,7 @@ namespace DennyTalk
                         }
                     }
                     OnDownloadComplete(fileInfo.filename);
+                    ++numberOfDownloadedFiles;
                 }
             }
             catch (Exception ex)
@@ -137,18 +145,21 @@ namespace DennyTalk
 
         protected virtual void OnDownloadComplete(string filename)
         {
+            Console.WriteLine("OnDownloadComplete");
             if (DownloadComplete != null)
                 DownloadComplete(this, new FileDownloadStartOrCompleteEventArgs(filename));
         }
 
         protected virtual void OnDownloading(string filename, float percent)
         {
+            Console.WriteLine("OnDownloading");
             if (Downloading != null)
                 Downloading(this, new FileDownloadingEventArgs(filename, percent));
         }
 
         protected virtual void OnDownloadStart(string filename)
         {
+            Console.WriteLine("OnDownloadStart");
             if (DownloadStart != null)
                 DownloadStart(this, new FileDownloadStartOrCompleteEventArgs(filename));
         }
@@ -157,6 +168,7 @@ namespace DennyTalk
         {
             if (Error != null)
                 Error(this, new ExceptionEventArgs(ex));
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -175,7 +187,7 @@ namespace DennyTalk
         public FileReceiver(string pathForSave)
         {
             this.PathForSave = pathForSave;
-            listener = new TcpListener(0);
+            listener = new TcpListener(IPAddress.Loopback, 2000);
         }
 
         public bool IsClosed
@@ -200,13 +212,15 @@ namespace DennyTalk
             listenThread = new Thread(listenThread_DoWork);
             listenThread.IsBackground = true;
             listenThread.Start();
+            Thread.Sleep(100);
         }
 
         private void listenThread_DoWork()
         {
             while (true)
             {
-                var client = new FileReceiverClient(listener.AcceptTcpClient(), PathForSave);
+                TcpClient c = listener.AcceptTcpClient();
+                var client = new FileReceiverClient(c, PathForSave);
                 client.Auth += new EventHandler<AuthFileTransferingEventArgs>(client_Auth);
                 unauthenticatedClients.Add(client);
             }

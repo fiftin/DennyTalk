@@ -89,16 +89,10 @@ namespace DennyTalk
                     accountStorage.AddNode("AvatarFileName").Value = "";
                     accountStorage.AddNode("Status").Value = "Offline";
                     accountStorage.Save();
-
                 }
                 else
-                {
                     accountStorage = new XmlStorage(accountFileName);
-                }
-
-
-                Messanger messanger = new Messanger(optionStorage, contactStorage, accountStorage);
-
+                Messanger messanger = new Messanger(optionStorage, contactStorage, accountStorage, () => new ContactEx());
 
                 messanger.Initialize();
 

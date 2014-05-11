@@ -139,6 +139,17 @@ namespace DennyTalk
             }
         }
     }
+    public class FilePortRequestReceivedEventArgs : RequestReceivedEventArgs
+    {
+        public int NumberOfFiles { get; private set; }
+        public int RequestId { get; private set; }
+        public FilePortRequestReceivedEventArgs(Address address, int numberOfFiles, int requestId)
+            : base(address)
+        {
+            NumberOfFiles = numberOfFiles;
+            RequestId = requestId;
+        }
+    }
 
     public class RequestReceivedEventArgs : EventArgs
     {
@@ -225,11 +236,11 @@ namespace DennyTalk
 
         public event EventHandler<UserInfoReveivedEventArgs> UserInfoReceived;
 
-        public event EventHandler<RequestReceivedEventArgs> UserInfoRequest;
+        public event EventHandler<RequestReceivedEventArgs> UserInfoRequestReceived;
 
-        public event EventHandler<RequestReceivedEventArgs> UserStatusRequest;
+        public event EventHandler<RequestReceivedEventArgs> UserStatusRequestReceived;
 
-        public event EventHandler<RequestReceivedEventArgs> FilePortRequest;
+        public event EventHandler<FilePortRequestReceivedEventArgs> FilePortRequestReceived;
 
         public event EventHandler<TelegramReceivedEventArgs> TelegramReceived;
 
@@ -397,8 +408,11 @@ namespace DennyTalk
                     OnUserStatusReceived(header, address, data);
                     break;
                 case TelegramHeaderType.FilePortRequest:
-                    if (FilePortRequest != null)
-                        FilePortRequest(this, new RequestReceivedEventArgs(address));
+                    if (FilePortRequestReceived != null)
+                    {
+                        FilePortRequest req = MemoryHelper.ByteArrayToStructure<FilePortRequest>(data);
+                        FilePortRequestReceived(this, new FilePortRequestReceivedEventArgs(address, req.numberOfFiles, header.id));
+                    }
                     break;
                 case TelegramHeaderType.FilePort:
                     if (FilePortReceived != null) {
@@ -430,14 +444,14 @@ namespace DennyTalk
 
         protected virtual void OnUserStatusRequest(TelegramHeader header, Address address)
         {
-            if (UserStatusRequest != null)
-                UserStatusRequest(this, new RequestReceivedEventArgs(address));
+            if (UserStatusRequestReceived != null)
+                UserStatusRequestReceived(this, new RequestReceivedEventArgs(address));
         }
 
         protected virtual void OnUserInfoRequest(TelegramHeader header, Address address)
         {
-            if (UserInfoRequest != null)
-                UserInfoRequest(this, new RequestReceivedEventArgs(address));
+            if (UserInfoRequestReceived != null)
+                UserInfoRequestReceived(this, new RequestReceivedEventArgs(address));
         }
 
         protected virtual void OnMessageDelivered(TelegramHeader header, Address address, byte[] bytes)
@@ -474,10 +488,11 @@ namespace DennyTalk
             return result;
         }
 
-        public void SendFilePort(Address address, int port)
+        public void SendFilePort(Address address, int port, int requestId)
         {
             FilePort d = new FilePort();
             d.port = port;
+            d.requestId = requestId;
             Send(address, d);
         }
 

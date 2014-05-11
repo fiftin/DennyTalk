@@ -13,7 +13,7 @@ namespace DennyTalk
         private Bitmap accountAvatar;
         private string accountNick;
         private Address accountAddress;
-        private ContactInfo contactInfo;
+        private ContactEx contactInfo;
         private BindingList<Message> messages = new BindingList<Message>();
         public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
         private Color evenMessageBackColor = Color.FromArgb(255, 240, 240, 240);
@@ -29,50 +29,35 @@ namespace DennyTalk
         {
         }
 
-        public void AddMessages(HistoryMessage[] historyMessages)
+        public void AddMessage(Message msg)
         {
-            foreach (HistoryMessage historyMessage in historyMessages)
+            if (msg.Direction == MessageDirection.In)
             {
-                AddMessage(historyMessage);
-            }
-        }
-
-        public void AddMessage(HistoryMessage historyMessage)
-        {
-            Message msg = new Message();
-            msg.Text = historyMessage.Text;
-            msg.Time = historyMessage.Time;
-            msg.ID = historyMessage.ID;
-            msg.Direction = historyMessage.Direction;
-
-            if (historyMessage.Direction == HistoryMessageDirection.In)
-            {
-                msg.SenderAddress = historyMessage.FromAddress;
                 msg.SenderNick = UserInfo.Nick;
                 msg.SenderAvatar = UserInfo.Avatar;
-                
             }
-            else if (historyMessage.Direction == HistoryMessageDirection.Out)
+            else if (msg.Direction == MessageDirection.Out)
             {
-                msg.SenderAddress = AccountAddress;
                 msg.SenderNick = AccountNick;
                 msg.SenderAvatar = AccountAvatar;
             }
 
-            this.messages.Add(msg);
-            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
 
-            int o = dataGridView1.Rows.Count % 2;
-
-            if (o == 0)
+            Invoke(new MethodInvoker(() =>
             {
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0].Style.BackColor = evenMessageBackColor;
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[1].Style.BackColor = evenMessageBackColor;
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = evenMessageBackColor;
-            }
+                this.messages.Add(msg);
+                dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
+                int o = dataGridView1.Rows.Count % 2;
+                if (o == 0)
+                {
+                    dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0].Style.BackColor = evenMessageBackColor;
+                    dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[1].Style.BackColor = evenMessageBackColor;
+                    dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = evenMessageBackColor;
+                }
+            }));
         }
 
-        public ContactInfo UserInfo
+        public ContactEx UserInfo
         {
             get { return contactInfo; }
             set

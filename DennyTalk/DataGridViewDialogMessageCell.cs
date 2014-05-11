@@ -14,9 +14,9 @@ namespace DennyTalk
             
             base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
 
-            Brush br = msg.Direction == HistoryMessageDirection.In ? Brushes.Blue : Brushes.Red;
+            Brush br = msg.Direction == MessageDirection.In ? Brushes.Blue : Brushes.Red;
             Font font = new Font("Courier new", 9, FontStyle.Bold);
-            string nick = string.IsNullOrEmpty(msg.SenderNick) ? msg.SenderAddress.Host : msg.SenderNick;
+            string nick = string.IsNullOrEmpty(msg.SenderNick) ? msg.FromAddress.Host : msg.SenderNick;
             SizeF nickSize = graphics.MeasureString(msg.SenderNick, font);
             graphics.DrawString(msg.SenderNick, font, br, cellBounds.X + 2, cellBounds.Y + 5);
             if (msg.Delivered)

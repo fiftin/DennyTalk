@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace DennyTalk
 {
-    public class Contact : System.ComponentModel.INotifyPropertyChanged, IPropertyChangeNotifier
+    public class Contact : INotifyPropertyChanged, IPropertyChangeNotifier
     {
         private string nick;
         private string statusText;
@@ -14,9 +15,28 @@ namespace DennyTalk
         private Bitmap avatar;
         private IDictionary<string, object> tag = new Dictionary<string, object>();
 
+        public Contact()
+        {
+            status = UserStatus.Offline;
+        }
+
         public IDictionary<string, object> Tag
         {
             get { return tag; }
+        }
+
+        public Address Address
+        {
+            get { return address; }
+            set
+            {
+                if (address != value)
+                {
+                    object oldValue = address;
+                    address = value;
+                    NotifyPropertyChanged("Address", oldValue, address);
+                }
+            }
         }
 
         public Bitmap Avatar
@@ -29,9 +49,9 @@ namespace DennyTalk
             {
                 if (avatar != value)
                 {
-                    object oldValue = avatar;
+                    Bitmap oldValue = avatar;
                     avatar = value;
-                    NotifyPropertyChanged("Avatar", oldValue, value);
+                    NotifyPropertyChanged("Avatar", oldValue, avatar);
                 }
             }
         }
@@ -78,25 +98,10 @@ namespace DennyTalk
             }
         }
 
-
-        public Address Address
-        {
-            get { return address; }
-            set
-            {
-                if (address != value)
-                {
-                    object oldValue = address;
-                    address = value;
-                    NotifyPropertyChanged("Address", oldValue, value);
-                }
-            }
-        }
-
-        protected virtual void NotifyPropertyChanged(string propertyName)
+        public virtual void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
@@ -106,8 +111,7 @@ namespace DennyTalk
             NotifyPropertyChanged(propertyName);
         }
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
-
     }
 }

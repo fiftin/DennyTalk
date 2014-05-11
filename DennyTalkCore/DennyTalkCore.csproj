@@ -47,13 +47,12 @@
     <Compile Include="FileReceiver.cs" />
     <Compile Include="FileSender.cs" />
     <Compile Include="History.cs" />
-    <Compile Include="HistoryMessage.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="ICommunicationClient.cs" />
     <Compile Include="ImageHelper2.cs" />
     <Compile Include="IPropertyChangeNotifier.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="IStorageNode.cs" />
-    <Compile Include="Message.cs" />
     <Compile Include="MessageDeliveredEventArgs.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="MessageSendEventArgs.cs" />

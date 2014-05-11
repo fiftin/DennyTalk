@@ -18,7 +18,7 @@ namespace DennyTalk
 
                 DataGridViewRow row = this.DataGridView.Rows[rowIndex];
                 object obj = row.DataBoundItem;
-                ContactInfo cont = (ContactInfo)obj;
+                ContactEx cont = (ContactEx)obj;
 
                 switch (cellState)
                 {

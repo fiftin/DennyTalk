@@ -11,6 +11,7 @@ namespace DennyTalk
     public class Messanger
     {
         public delegate void Procedure0();
+        public delegate T Func0<T>();
 
         private TelegramListener telegramListener;
         private Account account = new Account();
@@ -27,9 +28,9 @@ namespace DennyTalk
         private string updateServerHost;
         private FileReceiver fileReceiver;
         private FileSender fileSender;
+        private Func0<Contact> contactCreator;
 
-
-        public Messanger(IStorage optionStorage, IStorage contactStorage, IStorage accountStorage)
+        public Messanger(IStorage optionStorage, IStorage contactStorage, IStorage accountStorage, Func0<Contact> contactCreator)
         {
             this.contactStorage = contactStorage;
             this.accountStorage = accountStorage;
@@ -37,6 +38,7 @@ namespace DennyTalk
             history = new History();
             threadListener = new Thread(threadListener_DoListen);
             threadListener.IsBackground = true;
+            this.contactCreator = contactCreator;
         }
 
         public string UpdateServerHost
@@ -123,10 +125,10 @@ namespace DennyTalk
             telegramListener.TelegramReceived += new EventHandler<TelegramReceivedEventArgs>(telegramListener_TelegramReceived);
             telegramListener.UserInfoReceived += new EventHandler<UserInfoReveivedEventArgs>(telegramListener_UserInfoReceived);
             telegramListener.UserStatusReceived += new EventHandler<UserStatusReceivedEventArgs>(telegramListener_UserStatusReceived);
-            telegramListener.UserInfoRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserInfoRequest);
-            telegramListener.UserStatusRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserStatusRequest);
+            telegramListener.UserInfoRequestReceived += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserInfoRequest);
+            telegramListener.UserStatusRequestReceived += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserStatusRequest);
             telegramListener.MessageReceived += new EventHandler<MessageReceivedEventArgs>(telegramListener_MessageReceived);
-            telegramListener.FilePortRequest += new EventHandler<RequestReceivedEventArgs>(telegramListener_FilePortRequest);
+            telegramListener.FilePortRequestReceived += new EventHandler<FilePortRequestReceivedEventArgs>(telegramListener_FilePortRequest);
 
 
             if (string.IsNullOrEmpty((string)optionStorage["ImegesPath"].Value))
@@ -196,7 +198,7 @@ namespace DennyTalk
             foreach (KeyValuePair<string, IStorageNode> nodeKeyValuePair in contactStorage)
             {
                 IStorageNode node = nodeKeyValuePair.Value;
-                Contact contact = new Contact();
+                Contact contact = contactCreator();
 
                 string avatarFileName1 = (string)node["AvatarFileName"].Value;
                 if (string.IsNullOrEmpty(avatarFileName1))
@@ -233,9 +235,7 @@ namespace DennyTalk
 
             threadListener.Start();
 
-            fileReceiver = new FileReceiver("");
-
-            fileSender = new FileSender(telegramListener, account.Address.Port, account.Address.Guid);
+            fileSender = new FileSender(telegramListener, account.Address.Guid);
         }
 
         /// <summary>
@@ -255,14 +255,14 @@ namespace DennyTalk
             }
         }
 
-        void telegramListener_FilePortRequest(object sender, RequestReceivedEventArgs e)
+        void telegramListener_FilePortRequest(object sender, FilePortRequestReceivedEventArgs e)
         {
             if (fileReceiver == null || fileReceiver.IsClosed)
             {
-                fileReceiver = new FileReceiver("");
+                fileReceiver = new FileReceiver("D:\\");
                 fileReceiver.Start();
             }
-            telegramListener.SendFilePort(e.Address, fileReceiver.Port);
+            telegramListener.SendFilePort(e.Address, fileReceiver.Port, e.RequestId);
         }
 
         void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
@@ -477,7 +477,7 @@ namespace DennyTalk
             }
         }
 
-        public int SendFiles(Contact contact, string[] filenames)
+        public FileSenderConnection SendFiles(Contact contact, string[] filenames)
         {
             return fileSender.Send(contact.Address, filenames);
         }

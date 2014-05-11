@@ -1,21 +1,60 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace DennyTalk
 {
+    public enum MessageDirection
+    {
+        In,
+        Out
+    }
+
+    public enum MessageType
+    {
+        Message,
+        Files,
+        FilesRequest
+    }
+
     public class Message : INotifyPropertyChanged
     {
-        private string text;
         private int id;
         private DateTime time;
+        private string text;
+        private MessageDirection direction;
+        private Address fromAddress;
+        private MessageType type;
+        private string[] filenames;
+        private bool delivered;
         private string senderNick;
         private Bitmap senderImage;
-        private Address senderAddress;
-        private HistoryMessageDirection direction;
-        private bool delivered;
+
+        public Message(DateTime time, string text, MessageDirection direction, Address fromAddress, MessageType type)
+        {
+            this.time = time;
+            this.text = text;
+            this.direction = direction;
+            this.fromAddress = fromAddress;
+            this.type = type;
+        }
+
+        public Message(DateTime time, string[] filenames, MessageDirection direction, Address fromAddress, MessageType type)
+        {
+            this.time = time;
+            this.filenames = filenames;
+            this.direction = direction;
+            this.fromAddress = fromAddress;
+            this.type = type;
+        }
+
+        public int ID
+        {
+            get { return id; }
+            set { id = value; }
+        }
 
         public bool Delivered
         {
@@ -23,16 +62,29 @@ namespace DennyTalk
             set { delivered = value; }
         }
 
-        public HistoryMessageDirection Direction
+        public Address FromAddress
         {
-            get { return direction; }
-            set { direction = value; }
+            get { return fromAddress; }
         }
 
-        public Address SenderAddress
+        public MessageDirection Direction
         {
-            get { return senderAddress; }
-            set { senderAddress = value; }
+            get { return direction; }
+            set
+            {
+                direction = value;
+            }
+        }
+
+        public string Text
+        {
+            get { return text; }
+            set { text = value; }
+        }
+
+        public DateTime Time
+        {
+            get { return time; }
         }
 
         public Bitmap SenderAvatar
@@ -45,31 +97,6 @@ namespace DennyTalk
         {
             get { return senderNick; }
             set { senderNick = value; }
-        }
-
-        public DateTime Time
-        {
-            get { return time; }
-            set { time = value; }
-        }
-
-        public int ID
-        {
-            get { return id; }
-            set { id = value; }
-        }
-
-        public string Text
-        {
-            get { return text; }
-            set
-            {
-                if (text != value)
-                {
-                    text = value;
-                    NotifyPropertyChanged("Text");
-                }
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -85,5 +112,6 @@ namespace DennyTalk
                 catch { }
             }
         }
+
     }
 }
