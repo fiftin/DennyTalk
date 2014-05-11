@@ -9,74 +9,94 @@ using System.Threading;
 
 namespace DennyTalk
 {
-    public class FileSenderConnection
+    public class FileSenderConnection : FileTransferClient
     {
-        private bool cancel;
-        private Thread sendThread;
-        public int TelegramId { get; private set; }
         public string[] FileNames { get; private set; }
         public IPEndPoint RemoteIP { get; private set; }
         public string AccountGuid { get; private set; }
 
-        public FileSenderConnection(string accountGuid, string[] filenames, int telegramId)
+        private Thread transferThread;
+
+        public event EventHandler<EventArgs> Rejected;
+
+        public FileSenderConnection(string accountGuid, string[] filenames, int requestId)
         {
             FileNames = filenames;
             AccountGuid = accountGuid;
-            sendThread = new Thread(DoSend);
-            sendThread.IsBackground = true;
-            TelegramId = telegramId;
+            transferThread = new Thread(DoSend);
+            transferThread.Name = "FileSenderClientThread";
+            transferThread.IsBackground = true;
+            RequestId = requestId;
         }
 
         public void SendAsync(IPEndPoint ip)
         {
             RemoteIP = ip;
-            sendThread.Start();
+            transferThread.Start();
         }
 
         private void DoSend()
         {
-            SendByTcp(RemoteIP, FileNames);
+            SendByTcp(RemoteIP, FileNames, RequestId);
         }
 
-        public void Cancel()
-        {
-            cancel = true;
-        }
-
-        protected void SendByTcp(IPEndPoint remoteEP, string[] filenames)
+        protected void SendByTcp(IPEndPoint remoteEP, string[] filenames, int requestId)
         {
             using (TcpClient client = new TcpClient())
             {
-                client.Connect(remoteEP);
-                NetworkStream stream = client.GetStream();
-                AuthFileTransfering auth = new AuthFileTransfering();
-                auth.guid = AccountGuid;
-                auth.numberOfFiles = filenames.Length;
-                MemoryHelper.WriteStructureToStream(auth, stream);
-                foreach (string fn in filenames)
+                try
                 {
-                    if (cancel)
-                        break;
-                    FileInfo f = new FileInfo(fn);
-                    TransferedFileInfo fi = new TransferedFileInfo();
-                    fi.filename = Path.GetFileName(fn);
-                    fi.size = f.Length;
-                    MemoryHelper.WriteStructureToStream(fi, stream);
-                    byte[] buffer = new byte[1000];
-                    using (FileStream inputStream = f.OpenRead())
+                    client.Connect(remoteEP);
+                    NetworkStream stream = client.GetStream();
+                    AuthFileTransfering auth = new AuthFileTransfering();
+                    auth.guid = AccountGuid;
+                    auth.numberOfFiles = filenames.Length;
+                    auth.requestId = requestId;
+                    MemoryHelper.WriteStructureToStream(auth, stream);
+                    foreach (string fn in filenames)
                     {
-                        int read = inputStream.Read(buffer, 0, buffer.Length);
-                        while (read > 0)
+                        CurrentFileNumber++;
+                        if (IsCancel)
+                            break;
+                        FileInfo f = new FileInfo(fn);
+                        TransferedFileInfo fi = new TransferedFileInfo();
+                        fi.filename = Path.GetFileName(fn);
+                        fi.size = f.Length;
+                        MemoryHelper.WriteStructureToStream(fi, stream);
+                        byte[] buffer = new byte[1000];
+                        int totalSent = 0;
+                        using (FileStream inputStream = f.OpenRead())
                         {
-                            if (cancel)
-                                break;
-                            stream.Write(buffer, 0, read);
-                            read = inputStream.Read(buffer, 0, buffer.Length);
+                            OnLoadStart(fi.filename);
+                            int read = inputStream.Read(buffer, 0, buffer.Length);
+                            while (read > 0)
+                            {
+                                if (IsCancel)
+                                    break;
+                                stream.Write(buffer, 0, read);
+                                totalSent += read;
+                                OnLoading(fi.filename, (totalSent / (float)fi.size) * 100f);
+                                read = inputStream.Read(buffer, 0, buffer.Length);
+                            }
+                            OnLoadComplete(fi.filename);
                         }
                     }
+                    CurrentFileName = null;
+                    CurrentFileNumber = -1;
+                }
+                catch (Exception)
+                {
+                    Reject();
                 }
             }
         }
+
+        internal void Reject()
+        {
+            if (Rejected != null)
+                Rejected(this, new EventArgs());
+        }
+
     }
 
     /// <summary>
@@ -98,7 +118,15 @@ namespace DennyTalk
         void telegramListener_FilePortReceived(object sender, FilePortReceivedEventArgs e)
         {
             if (connections.ContainsKey(e.RequestId))
-                connections[e.RequestId].SendAsync(new IPEndPoint(e.Address.IP, e.Port));
+            {
+                if (e.Port != -1)
+                {
+                    connections[e.RequestId].SendAsync(new IPEndPoint(e.Address.IP, e.Port));
+                }
+                else
+                    connections[e.RequestId].Reject();
+                connections.Remove(e.RequestId);
+            }
         }
 
         /// <summary>

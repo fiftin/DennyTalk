@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DennyTalk", "DennyTalk\DennyTalk.csproj", "{7EFE2106-91E2-4AFA-AA41-654CE4F8615E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DennyTalkServer", "DennyTalkServer\DennyTalkServer.csproj", "{95C66552-96E5-4154-A08B-1154DA0128BB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DennyTalkCore", "DennyTalkCore\DennyTalkCore.csproj", "{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{8D8BE970-A944-41EA-BB43-16C6BA98935D}"
@@ -15,10 +13,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B1A2986-CAA3-4F79-AEF8-13E051BF1CEC}.Debug|x86.ActiveCfg = Debug|x86
-		{5B1A2986-CAA3-4F79-AEF8-13E051BF1CEC}.Debug|x86.Build.0 = Debug|x86
-		{5B1A2986-CAA3-4F79-AEF8-13E051BF1CEC}.Release|x86.ActiveCfg = Release|x86
-		{5B1A2986-CAA3-4F79-AEF8-13E051BF1CEC}.Release|x86.Build.0 = Release|x86
+		{7EFE2106-91E2-4AFA-AA41-654CE4F8615E}.Debug|x86.ActiveCfg = Debug|x86
+		{7EFE2106-91E2-4AFA-AA41-654CE4F8615E}.Release|x86.ActiveCfg = Debug|x86
+		{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3066BD4F-1116-4B2F-83CD-CC08C3DC4043}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D8BE970-A944-41EA-BB43-16C6BA98935D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D8BE970-A944-41EA-BB43-16C6BA98935D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

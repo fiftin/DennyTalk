@@ -31,6 +31,7 @@ namespace DennyTalk
         private bool delivered;
         private string senderNick;
         private Bitmap senderImage;
+        private object tag;
 
         public Message(DateTime time, string text, MessageDirection direction, Address fromAddress, MessageType type)
         {
@@ -50,6 +51,39 @@ namespace DennyTalk
             this.type = type;
         }
 
+        public void SetTypeAndTag(MessageType type, object tag)
+        {
+            this.type = type;
+            this.tag = tag;
+            NotifyPropertyChanged("Text");
+        }
+
+        public MessageType Type
+        {
+            get
+            {
+                return type;
+            }
+            set
+            {
+                type = value;
+                NotifyPropertyChanged("Text");
+            }
+        }
+
+        public object Tag
+        {
+            get
+            {
+                return tag;
+            }
+            set
+            {
+                tag = value;
+                NotifyPropertyChanged("Text");
+            }
+        }
+
         public int ID
         {
             get { return id; }
@@ -59,7 +93,11 @@ namespace DennyTalk
         public bool Delivered
         {
             get { return delivered; }
-            set { delivered = value; }
+            set
+            {
+                delivered = value;
+                NotifyPropertyChanged("Delivered");
+            }
         }
 
         public Address FromAddress
@@ -79,7 +117,11 @@ namespace DennyTalk
         public string Text
         {
             get { return text; }
-            set { text = value; }
+            set
+            {
+                text = value;
+                NotifyPropertyChanged("Text");
+            }
         }
 
         public DateTime Time

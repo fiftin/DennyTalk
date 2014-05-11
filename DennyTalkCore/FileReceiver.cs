@@ -10,86 +10,24 @@ using System.IO;
 
 namespace DennyTalk
 {
-    /// <summary>
-    /// Идентификация клиета инициировавшего передачу файла.
-    /// </summary>
-    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public struct AuthFileTransfering
-    {
-        //[FieldOffset(0)]
-        //public int port;
 
-        [FieldOffset(0)]
-        public int numberOfFiles;
-
-        [FieldOffset(4)]
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 40)]
-        public string guid;
-
-    }
-
-    /// <summary>
-    /// Файл.
-    /// </summary>
-    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public struct TransferedFileInfo
-    {
-        [FieldOffset(0)]
-        public long size;
-        [FieldOffset(8)]
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 300)]
-        public string filename;
-    }
-
-    public class FileDownloadStartOrCompleteEventArgs : EventArgs
-    {
-        public string FileName { get; private set; }
-        public FileDownloadStartOrCompleteEventArgs(string filename)
-        {
-            FileName = filename;
-        }
-    }
-
-    public class AuthFileTransferingEventArgs : EventArgs
-    {
-        public string Guid { get; private set; }
-        public AuthFileTransferingEventArgs(string guid)
-        {
-            Guid = guid;
-        }
-    }
-
-    public class FileDownloadingEventArgs : EventArgs
-    {
-        public string FileName { get; private set; }
-        public float Percent { get; private set; }
-        public FileDownloadingEventArgs(string filename, float percent)
-        {
-            FileName = filename;
-            Percent = percent;
-        }
-    }
-
-    public class FileReceiverClient
+    public class FileReceiverClient : FileTransferClient
     {
         public string PathForSave { get; private set; }
         public TcpClient Client { get; private set; }
-        private Thread Thread { get; set; }
+        public string ContactGuid { get; set; }
 
-        public event EventHandler<ExceptionEventArgs> Error;
-        public event EventHandler<FileDownloadStartOrCompleteEventArgs> DownloadStart;
-        public event EventHandler<FileDownloadStartOrCompleteEventArgs> DownloadComplete;
-        public event EventHandler<FileDownloadingEventArgs> Downloading;
+        private Thread transferThread;
         public event EventHandler<AuthFileTransferingEventArgs> Auth;
 
         public FileReceiverClient(TcpClient client, string pathForSave)
         {
             Client = client;
-            Thread = new Thread(Thread_DoReceive);
-            Thread.Name = "FileReceiverClientThread";
-            Thread.IsBackground = true;
+            transferThread = new Thread(Thread_DoReceive);
+            transferThread.Name = "FileReceiverClientThread";
+            transferThread.IsBackground = true;
             PathForSave = pathForSave;
-            Thread.Start();
+            transferThread.Start();
         }
 
         public bool IsClosed
@@ -100,19 +38,39 @@ namespace DennyTalk
             }
         }
 
+        private string GetFreeFileName(string filename)
+        {
+            if (File.Exists(PathForSave + Path.DirectorySeparatorChar + filename))
+            {
+                string fnWithoutExt = Path.GetFileNameWithoutExtension(filename);
+                string ext = Path.GetExtension(filename);
+                int i = 1;
+                string newFilename = string.Format("{0} ({1}){2}", fnWithoutExt, i, ext);
+                while (File.Exists(PathForSave + Path.DirectorySeparatorChar + newFilename))
+                {
+                    i++;
+                    newFilename = string.Format("{0} ({1}){2}", fnWithoutExt, i, ext);
+                }
+                return newFilename;
+            }
+            return filename;
+        }
+
         public void Thread_DoReceive()
         {
             try
             {
                 var stream = Client.GetStream();
                 AuthFileTransfering auth = MemoryHelper.ReadStructureFromStream<AuthFileTransfering>(stream);
-                OnAuth(auth.guid);
+                OnAuth(auth.guid, auth.requestId);
                 int numberOfDownloadedFiles = 0;
                 while (numberOfDownloadedFiles < auth.numberOfFiles)
                 {
                     TransferedFileInfo fileInfo = MemoryHelper.ReadStructureFromStream<TransferedFileInfo>(stream);
-                    OnDownloadStart(fileInfo.filename);
-                    using (FileStream outStream = File.OpenWrite(PathForSave + Path.DirectorySeparatorChar + fileInfo.filename))
+                    string filename = GetFreeFileName(fileInfo.filename);
+                    OnLoadStart(filename);
+                    CurrentFileNumber = numberOfDownloadedFiles;
+                    using (FileStream outStream = File.OpenWrite(PathForSave + Path.DirectorySeparatorChar + filename))
                     {
                         int totalRead = 0;
                         byte[] buffer = new byte[1000];
@@ -124,12 +82,14 @@ namespace DennyTalk
                                 break;
                             totalRead += read;
                             outStream.Write(buffer, 0, read);
-                            OnDownloading(fileInfo.filename, fileInfo.size / totalRead);
+                            OnLoading(fileInfo.filename, (totalRead / (float)fileInfo.size) * 100f);
                         }
                     }
-                    OnDownloadComplete(fileInfo.filename);
+                    OnLoadComplete(fileInfo.filename);
                     ++numberOfDownloadedFiles;
                 }
+                CurrentFileName = null;
+                CurrentFileNumber = -1;
             }
             catch (Exception ex)
             {
@@ -137,41 +97,22 @@ namespace DennyTalk
             }
         }
 
-        protected virtual void OnAuth(string guid)
+        protected virtual void OnAuth(string guid, int requestId)
         {
             if (Auth != null)
-                Auth(this, new AuthFileTransferingEventArgs(guid));
-        }
-
-        protected virtual void OnDownloadComplete(string filename)
-        {
-            Console.WriteLine("OnDownloadComplete");
-            if (DownloadComplete != null)
-                DownloadComplete(this, new FileDownloadStartOrCompleteEventArgs(filename));
-        }
-
-        protected virtual void OnDownloading(string filename, float percent)
-        {
-            Console.WriteLine("OnDownloading");
-            if (Downloading != null)
-                Downloading(this, new FileDownloadingEventArgs(filename, percent));
-        }
-
-        protected virtual void OnDownloadStart(string filename)
-        {
-            Console.WriteLine("OnDownloadStart");
-            if (DownloadStart != null)
-                DownloadStart(this, new FileDownloadStartOrCompleteEventArgs(filename));
-        }
-
-        protected virtual void OnError(Exception ex)
-        {
-            if (Error != null)
-                Error(this, new ExceptionEventArgs(ex));
-            Console.WriteLine(ex.Message);
+                Auth(this, new AuthFileTransferingEventArgs(guid, requestId));
         }
     }
 
+
+    public class FileReceiverClientEventArgs : EventArgs
+    {
+        public FileReceiverClient Client { get; private set; }
+        public FileReceiverClientEventArgs(FileReceiverClient client)
+        {
+            Client = client;
+        }
+    }
 
     /// <summary>
     /// 
@@ -184,6 +125,7 @@ namespace DennyTalk
         private IDictionary<string, FileReceiverClient> clients = new SortedDictionary<string, FileReceiverClient>();
         private string PathForSave { get; set; }
 
+        public event EventHandler<FileReceiverClientEventArgs> NewClient;
         public FileReceiver(string pathForSave)
         {
             this.PathForSave = pathForSave;
@@ -222,15 +164,30 @@ namespace DennyTalk
                 TcpClient c = listener.AcceptTcpClient();
                 var client = new FileReceiverClient(c, PathForSave);
                 client.Auth += new EventHandler<AuthFileTransferingEventArgs>(client_Auth);
+                client.LoadComplete += new EventHandler<FileLoadStartOrCompleteEventArgs>(client_DownloadComplete);
                 unauthenticatedClients.Add(client);
             }
+        }
+
+        void client_DownloadComplete(object sender, FileLoadStartOrCompleteEventArgs e)
+        {
+            FileReceiverClient c = (FileReceiverClient)sender;
+            c.Auth -= client_Auth;
+            c.LoadComplete -= client_DownloadComplete;
+            clients.Remove(c.ContactGuid);
         }
 
         void client_Auth(object sender, AuthFileTransferingEventArgs e)
         {
             FileReceiverClient c = (FileReceiverClient)sender;
             if (unauthenticatedClients.Remove(c))
+            {
                 clients.Add(e.Guid, c);
+                c.ContactGuid = e.Guid;
+                c.RequestId = e.RequestId;
+                if (NewClient != null)
+                    NewClient(this, new FileReceiverClientEventArgs((FileReceiverClient)sender));
+            }
         }
     }
 }

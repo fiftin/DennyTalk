@@ -23,7 +23,7 @@ namespace DennyTalkServer
         /// <summary>
         /// получение и отправка телеграмм по UDP
         /// </summary>
-        private Messanger messanger;
+        private Messenger messanger;
 
         /// <summary>
         /// поток на ожидание подключения новых клиентов
@@ -61,7 +61,7 @@ namespace DennyTalkServer
             Send(e, false, false);
         }
 
-        public Server(Messanger messanger, RemoteServerListener remoteServerListener)
+        public Server(Messenger messanger, RemoteServerListener remoteServerListener)
         {
             this.messanger = messanger;
             this.listener = messanger.TelegramListener;

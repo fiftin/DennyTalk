@@ -92,7 +92,7 @@ namespace DennyTalk
                 }
                 else
                     accountStorage = new XmlStorage(accountFileName);
-                Messanger messanger = new Messanger(optionStorage, contactStorage, accountStorage, () => new ContactEx());
+                Messenger messanger = new Messenger(optionStorage, contactStorage, accountStorage, () => new ContactEx());
 
                 messanger.Initialize();
 

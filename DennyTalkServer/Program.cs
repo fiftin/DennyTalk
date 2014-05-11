@@ -7,7 +7,7 @@ namespace DennyTalkServer
 {
     class Program
     {
-        private static Messanger messanger;
+        private static Messenger messanger;
         private static Server server;
 
         static void Main(string[] args)
@@ -18,7 +18,7 @@ namespace DennyTalkServer
             XmlStorage contactStorage = new XmlStorage("contacts.xml");
             XmlStorage accountStorage = new XmlStorage("account.xml");
 
-            messanger = new Messanger(optionStorage, contactStorage, accountStorage);
+            messanger = new Messenger(optionStorage, contactStorage, accountStorage);
             messanger.Initialize();
 
             RemoteServerListener rsl = new RemoteServerListener(int.Parse((string)optionStorage["TCPPort"].Value));

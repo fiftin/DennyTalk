@@ -8,7 +8,7 @@ using System.IO;
 
 namespace DennyTalk
 {
-    public class Messanger
+    public class Messenger
     {
         public delegate void Procedure0();
         public delegate T Func0<T>();
@@ -30,7 +30,7 @@ namespace DennyTalk
         private FileSender fileSender;
         private Func0<Contact> contactCreator;
 
-        public Messanger(IStorage optionStorage, IStorage contactStorage, IStorage accountStorage, Func0<Contact> contactCreator)
+        public Messenger(IStorage optionStorage, IStorage contactStorage, IStorage accountStorage, Func0<Contact> contactCreator)
         {
             this.contactStorage = contactStorage;
             this.accountStorage = accountStorage;
@@ -39,6 +39,14 @@ namespace DennyTalk
             threadListener = new Thread(threadListener_DoListen);
             threadListener.IsBackground = true;
             this.contactCreator = contactCreator;
+        }
+
+        public int FileReceivingPort
+        {
+            get
+            {
+                return fileReceiver.Port;
+            }
         }
 
         public string UpdateServerHost
@@ -128,8 +136,6 @@ namespace DennyTalk
             telegramListener.UserInfoRequestReceived += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserInfoRequest);
             telegramListener.UserStatusRequestReceived += new EventHandler<RequestReceivedEventArgs>(telegramListener_UserStatusRequest);
             telegramListener.MessageReceived += new EventHandler<MessageReceivedEventArgs>(telegramListener_MessageReceived);
-            telegramListener.FilePortRequestReceived += new EventHandler<FilePortRequestReceivedEventArgs>(telegramListener_FilePortRequest);
-
 
             if (string.IsNullOrEmpty((string)optionStorage["ImegesPath"].Value))
             {
@@ -236,48 +242,18 @@ namespace DennyTalk
             threadListener.Start();
 
             fileSender = new FileSender(telegramListener, account.Address.Guid);
+            string downloadDirectory = rootPath + System.IO.Path.DirectorySeparatorChar + "Downloads";
+            if (!Directory.Exists(downloadDirectory))
+                Directory.CreateDirectory(downloadDirectory);
+            fileReceiver = new FileReceiver(downloadDirectory);
+            fileReceiver.NewClient += new EventHandler<FileReceiverClientEventArgs>(fileReceiver_NewClient);
+            fileReceiver.Start();
         }
 
-        /// <summary>
-        /// ¬ыполн€етс€ при получении любой телеграммы. ¬ыполн€ет обновление информации о контакуте в случае еЄ изменени€.
-        /// </summary>
-        void telegramListener_TelegramReceived(object sender, TelegramReceivedEventArgs e)
+        void fileReceiver_NewClient(object sender, FileReceiverClientEventArgs e)
         {
-            Contact contact = contactManager.GetContactByAddress(e.Address);
-            if (contact != null)
-            {
-                if (!contact.Address.EqualIPAddress(e.Address)) // Ёто условие выполн€тес€, когда контакт был найден по GUID.
-                {                                               // ¬ этом случае нужно предупредить пользовател€, что контакт с таким-то GUID изменил свой Host.
-                    contact.Address = e.Address;
-                }
-                if (contact.Address.Guid != e.Address.Guid) // Ёто условие выполн€тес€, когда контакт был найден по Host.
-                    contact.Address = new Address(contact.Address, e.Address.Guid);
-            }
-        }
-
-        void telegramListener_FilePortRequest(object sender, FilePortRequestReceivedEventArgs e)
-        {
-            if (fileReceiver == null || fileReceiver.IsClosed)
-            {
-                fileReceiver = new FileReceiver("D:\\");
-                fileReceiver.Start();
-            }
-            telegramListener.SendFilePort(e.Address, fileReceiver.Port, e.RequestId);
-        }
-
-        void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
-        {
-            telegramListener.SendTelegramDelivery(e.Address, e.ID);
-        }
-
-        void telegramListener_UserStatusRequest(object sender, RequestReceivedEventArgs e)
-        {
-            telegramListener.SendStatus(e.Address, account.Status, account.StatusText);
-        }
-
-        void telegramListener_UserInfoRequest(object sender, RequestReceivedEventArgs e)
-        {
-            telegramListener.SendInfo(e.Address, account.Avatar, account.Nick, account.Status, account.StatusText);
+            if (NewClient != null)
+                NewClient(this, e);
         }
 
         void account_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -323,6 +299,70 @@ namespace DennyTalk
                     break;
             }
         }
+
+        #region telegramListener event handlers
+
+        /// <summary>
+        /// ¬ыполн€етс€ при получении любой телеграммы. ¬ыполн€ет обновление информации о контакуте в случае еЄ изменени€.
+        /// </summary>
+        void telegramListener_TelegramReceived(object sender, TelegramReceivedEventArgs e)
+        {
+            Contact contact = contactManager.GetContactByAddress(e.Address);
+            if (contact != null)
+            {
+                if (!contact.Address.EqualIPAddress(e.Address)) // Ёто условие выполн€тес€, когда контакт был найден по GUID.
+                {                                               // ¬ этом случае нужно предупредить пользовател€, что контакт с таким-то GUID изменил свой Host.
+                    contact.Address = e.Address;
+                }
+                if (contact.Address.Guid != e.Address.Guid) // Ёто условие выполн€тес€, когда контакт был найден по Host.
+                    contact.Address = new Address(contact.Address, e.Address.Guid);
+            }
+        }
+
+        void telegramListener_MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            telegramListener.SendTelegramDelivery(e.Address, e.ID);
+        }
+
+        void telegramListener_UserStatusRequest(object sender, RequestReceivedEventArgs e)
+        {
+            telegramListener.SendStatus(e.Address, account.Status, account.StatusText);
+        }
+
+        void telegramListener_UserInfoRequest(object sender, RequestReceivedEventArgs e)
+        {
+            telegramListener.SendInfo(e.Address, account.Avatar, account.Nick, account.Status, account.StatusText);
+        }
+
+        void telegramListener_UserStatusReceived(object sender, UserStatusReceivedEventArgs e)
+        {
+            Contact contact = contactManager.GetContactByAddress(e.Address);
+            if (contact != null)
+            {
+                if (contact.Status != e.Status)
+                    contact.Status = e.Status;
+                if (contact.StatusText != e.Text)
+                    contact.StatusText = e.Text;
+                contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;
+            }
+        }
+
+        void telegramListener_UserInfoReceived(object sender, UserInfoReveivedEventArgs e)
+        {
+            Contact contact = contactManager.GetContactByAddress(e.Address);
+            if (contact != null)
+            {
+                contact.Status = e.Status;
+                contact.StatusText = e.StatusText;
+                contact.Nick = e.Nick;
+                contact.Avatar = e.Avatar;
+                contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;
+            }
+        }
+
+        #endregion
+
+        #region contactManager event handlers
 
         void contactManager_ContactChanged(object sender, ContactEventArgs e)
         {
@@ -405,6 +445,8 @@ namespace DennyTalk
             contactStorage.Save();
         }
 
+        #endregion
+
         private void RequestContactInfos()
         {
             Contact[] contacts = contactManager.GetContacts();
@@ -428,7 +470,7 @@ namespace DennyTalk
             Procedure0 proc = SendStatusToContacts;
             IAsyncResult res = proc.BeginInvoke(delegate(IAsyncResult ar)
             {
-                proc.EndInvoke(ar); 
+                proc.EndInvoke(ar);
             }, null);
         }
 
@@ -451,35 +493,11 @@ namespace DennyTalk
             proc.Invoke();
         }
 
-        void telegramListener_UserStatusReceived(object sender, UserStatusReceivedEventArgs e)
-        {
-            Contact contact = contactManager.GetContactByAddress(e.Address);
-            if (contact != null)
-            {
-                if (contact.Status != e.Status)
-                    contact.Status = e.Status;
-                if (contact.StatusText != e.Text)
-                    contact.StatusText = e.Text;
-                contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;
-            }
-        }
-
-        void telegramListener_UserInfoReceived(object sender, UserInfoReveivedEventArgs e)
-        {
-            Contact contact = contactManager.GetContactByAddress(e.Address);
-            if (contact != null)
-            {
-                contact.Status = e.Status;
-                contact.StatusText = e.StatusText;
-                contact.Nick = e.Nick;
-                contact.Avatar = e.Avatar;
-                contact.Tag["LastReceivedTelegramTime"] = DateTime.Now;
-            }
-        }
-
         public FileSenderConnection SendFiles(Contact contact, string[] filenames)
         {
             return fileSender.Send(contact.Address, filenames);
         }
+
+        public event EventHandler<FileReceiverClientEventArgs> NewClient;
     }
 }

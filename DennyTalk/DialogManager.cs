@@ -8,8 +8,25 @@ namespace DennyTalk
 {
     public class DialogManager
     {
+        public class FilePortRequestInfo
+        {
+            public bool IsAcknowledged { get; set; }
+            public bool IsAccepted { get; set; }
+            public Address Address { get; private set; }
+            public int NumberOfFiles { get; private set; }
+            public TelegramListener TelegramListener { get; private set; }
+            public int FileReceivingPort { get; private set; }
+            public FilePortRequestInfo(int nFiles, Address address, TelegramListener l, int fileReceivingPort)
+            {
+                NumberOfFiles = nFiles;
+                Address = address;
+                TelegramListener = l;
+                FileReceivingPort = fileReceivingPort;
+            }
+        }
+
         //
-        private Messanger messanger;
+        private Messenger messanger;
         private TelegramListener telegramListener;
         private ContactManager contactManager;
         private Account account;
@@ -35,7 +52,7 @@ namespace DennyTalk
         /// 
         /// </summary>
         /// <param name="controller"></param>
-        public DialogManager(Messanger messanger)
+        public DialogManager(Messenger messanger)
         {
             this.messanger = messanger;
             telegramListener = this.messanger.TelegramListener;
@@ -59,6 +76,8 @@ namespace DennyTalk
             MainForm.Nick = account.Nick;
             MainForm.StatusText = account.StatusText;
             MainForm.Status = account.Status;
+
+            messanger.NewClient += new EventHandler<FileReceiverClientEventArgs>(messanger_NewClient);
         }
 
         private void InitializeDialogs()
@@ -99,13 +118,36 @@ namespace DennyTalk
             telegramListener.UserStatusReceived += new EventHandler<UserStatusReceivedEventArgs>(telegramListener_UserStatusReceived);
         }
 
+        void messanger_NewClient(object sender, FileReceiverClientEventArgs e)
+        {
+            Message msg = FindMessage(e.Client.RequestId, MessageType.FilesRequest,
+                (ContactEx)contactManager.GetContactByGuid(e.Client.ContactGuid));
+            if (msg != null)
+            {
+                msg.SetTypeAndTag(MessageType.Files, e.Client);
+                e.Client.Message = msg;
+            }
+        }
+
         /// <summary>
         /// Получен ответ на запрос порта для передачи файлов.
         /// </summary>
         void telegramListener_FilePortReceived(object sender, FilePortReceivedEventArgs e)
         {
-            Message msg = new Message(DateTime.Now, "Received permission for transfering files", MessageDirection.In, e.Address, MessageType.Files);
-            AddMessage(msg, (ContactEx)contactManager.GetContactByAddress(e.Address));
+            Message msg = FindMessage(e.RequestId, MessageType.FilesRequest, (ContactEx)contactManager.GetContactByAddress(e.Address));
+            FilePortRequestInfo info = (FilePortRequestInfo)msg.Tag;
+            if (msg != null)
+            {
+                if (info.IsAcknowledged && info.IsAccepted)
+                {
+                    StringBuilder b = new StringBuilder();
+                    for (int i = 1; i <= info.NumberOfFiles; i++)
+                        b.Append("\n" + i + ". ???");
+                    msg.Text += b.ToString();
+                }
+                else
+                    msg.Text += "\nTransfering canceled";
+            }
         }
 
         /// <summary>
@@ -113,7 +155,11 @@ namespace DennyTalk
         /// </summary>
         void telegramListener_FilePortRequest(object sender, FilePortRequestReceivedEventArgs e)
         {
-            Message msg = new Message(DateTime.Now, string.Format("Received request for transfering {0} file(s)", e.NumberOfFiles), MessageDirection.In, e.Address, MessageType.FilesRequest);
+            String s = string.Format("Received request for transfering {0} file(s)", e.NumberOfFiles);
+            Message msg = new Message(DateTime.Now, s, 
+                MessageDirection.In, e.Address, MessageType.FilesRequest);
+            msg.Tag = new FilePortRequestInfo(e.NumberOfFiles, e.Address, telegramListener, messanger.FileReceivingPort);
+            msg.ID = e.RequestId;
             AddMessage(msg, (ContactEx)contactManager.GetContactByAddress(e.Address));
         }
 
@@ -239,9 +285,14 @@ namespace DennyTalk
 
         void dialogForm_FilesSend(object sender, FilesSendEventArgs e)
         {
-            int telegramId = messanger.SendFiles(e.ReceiverContectInfo, e.FileNames).TelegramId;
-            Message msg = new Message(DateTime.Now, "Sending file(s):\n  " + string.Join("\n  ", e.FileNames), MessageDirection.Out, e.ReceiverContectInfo.Address, MessageType.Files);
-            msg.ID = telegramId;
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < e.FileNames.Length; i++)
+                b.AppendLine(string.Format("{0}. {1}", i + 1, System.IO.Path.GetFileName(e.FileNames[i])));
+            Message msg = new Message(DateTime.Now, string.Format("Sending file(s):\n{0}", b.ToString()), MessageDirection.Out, e.ReceiverContectInfo.Address, MessageType.Files);
+            FileSenderConnection conn = messanger.SendFiles(e.ReceiverContectInfo, e.FileNames);
+            msg.ID = conn.RequestId;
+            msg.Tag = conn;
+            conn.Message = msg;
             AddMessage(msg, e.ReceiverContectInfo);
         }
 
@@ -420,18 +471,32 @@ namespace DennyTalk
                 CheckUpdates(sender, e);
         }
 
-        protected void AddMessage(Message msg, ContactEx contectInfo)
+        protected Message FindMessage(int requestId, MessageType type, ContactEx contactInfo)
         {
-            DialogUserControl dialog = null;
-            if (!DialogForm.HasDialog(contectInfo.Address))
+            if (DialogForm.HasDialog(contactInfo.Address))
+            {
+                DialogUserControl dialog = null;
                 MainForm.Invoke(new MethodInvoker(delegate()
                 {
-                    dialog = DialogForm.AddDialog(contectInfo, new Message[] { msg });
+                    dialog = DialogForm.SelectDialog(contactInfo.Address);
+                }));
+                return dialog.FindMessage(requestId, type);
+            }
+            return null;
+        }
+
+        protected void AddMessage(Message msg, ContactEx contactInfo)
+        {
+            DialogUserControl dialog = null;
+            if (!DialogForm.HasDialog(contactInfo.Address))
+                MainForm.Invoke(new MethodInvoker(delegate()
+                {
+                    dialog = DialogForm.AddDialog(contactInfo, new Message[] { msg });
                 }));
             else
                 MainForm.Invoke(new MethodInvoker(delegate()
                 {
-                    dialog = DialogForm.SelectDialog(contectInfo.Address);
+                    dialog = DialogForm.SelectDialog(contactInfo.Address);
                 }));
             if (dialog != null)
                 dialog.AddMessage(msg);

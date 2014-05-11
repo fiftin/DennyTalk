@@ -17,6 +17,7 @@ namespace DennyTalk
         private BindingList<Message> messages = new BindingList<Message>();
         public event EventHandler<PropertyChangeNotifierEventArgs> PropertyChange;
         private Color evenMessageBackColor = Color.FromArgb(255, 240, 240, 240);
+        private object oldValue;
 
         public DialogUserControl()
         {
@@ -27,6 +28,16 @@ namespace DennyTalk
 
         private void DialogUserControl_Load(object sender, EventArgs e)
         {
+        }
+
+        public Message FindMessage(int id, MessageType type)
+        {
+            foreach (Message msg in messages)
+            {
+                if (msg.ID == id && msg.Type == type)
+                    return msg;
+            }
+            return null;
         }
 
         public void AddMessage(Message msg)
@@ -41,8 +52,6 @@ namespace DennyTalk
                 msg.SenderNick = AccountNick;
                 msg.SenderAvatar = AccountAvatar;
             }
-
-
             Invoke(new MethodInvoker(() =>
             {
                 this.messages.Add(msg);
@@ -87,7 +96,6 @@ namespace DennyTalk
             }
         }
 
-
         public Address AccountAddress
         {
             get { return accountAddress; }
@@ -113,8 +121,6 @@ namespace DennyTalk
             get { return accountAvatar; }
             set { accountAvatar = value; }
         }
-
-
 
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
         {
@@ -150,7 +156,32 @@ namespace DennyTalk
         private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex >= 0)
-                dataGridView1.Rows[e.RowIndex].Selected = true;
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                Message msg = (Message)row.DataBoundItem;
+                if (msg.Type == MessageType.FilesRequest && msg.Direction == MessageDirection.In)
+                {
+                    row.Selected = true;
+                    if (e.Location.X > 10 && e.Location.X < 50
+                        && e.Location.Y < row.Height - 10
+                        && e.Location.Y > row.Height - 25)
+                    {
+                        DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
+                        req.TelegramListener.SendFilePort(req.Address, req.FileReceivingPort, msg.ID);
+                        req.IsAcknowledged = true;
+                        req.IsAccepted = true;
+                    }
+                    else if (e.Location.X > 60 && e.Location.X < 100
+                        && e.Location.Y < row.Height - 10
+                        && e.Location.Y > row.Height - 25)
+                    {
+                        DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
+                        req.TelegramListener.SendFilePort(req.Address, -1, msg.ID);
+                        req.IsAcknowledged = true;
+                        req.IsAccepted = false;
+                    }
+                }
+            }
         }
 
         private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -167,8 +198,6 @@ namespace DennyTalk
                 copyToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
             }
         }
-
-        private object oldValue;
 
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {

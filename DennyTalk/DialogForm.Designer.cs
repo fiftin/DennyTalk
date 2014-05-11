@@ -50,21 +50,21 @@ namespace DennyTalk
             this.panel1.Controls.Add(this.btnSend);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 262);
+            this.panel1.Location = new System.Drawing.Point(3, 251);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(502, 65);
+            this.panel1.Size = new System.Drawing.Size(538, 65);
             this.panel1.TabIndex = 3;
             // 
             // btnSendFile
             // 
             this.btnSendFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSendFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSendFile.Location = new System.Drawing.Point(420, 34);
+            this.btnSendFile.Location = new System.Drawing.Point(443, 34);
             this.btnSendFile.Name = "btnSendFile";
             this.btnSendFile.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.btnSendFile.Size = new System.Drawing.Size(79, 28);
+            this.btnSendFile.Size = new System.Drawing.Size(92, 28);
             this.btnSendFile.TabIndex = 2;
-            this.btnSendFile.Text = "Send &file";
+            this.btnSendFile.Text = "Send &files";
             this.btnSendFile.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnSendFile.UseVisualStyleBackColor = true;
             this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
@@ -74,10 +74,10 @@ namespace DennyTalk
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.Image = global::DennyTalk.Properties.Resources.email_go;
             this.btnSend.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSend.Location = new System.Drawing.Point(420, 3);
+            this.btnSend.Location = new System.Drawing.Point(443, 3);
             this.btnSend.Name = "btnSend";
             this.btnSend.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.btnSend.Size = new System.Drawing.Size(79, 28);
+            this.btnSend.Size = new System.Drawing.Size(92, 28);
             this.btnSend.TabIndex = 1;
             this.btnSend.Text = "&Send";
             this.btnSend.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -94,7 +94,7 @@ namespace DennyTalk
             this.textBox1.MaxLength = 2000;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(414, 59);
+            this.textBox1.Size = new System.Drawing.Size(437, 59);
             this.textBox1.TabIndex = 0;
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
@@ -107,7 +107,7 @@ namespace DennyTalk
             this.tabControl1.Location = new System.Drawing.Point(3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(502, 260);
+            this.tabControl1.Size = new System.Drawing.Size(538, 249);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             this.tabControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDown);
@@ -164,10 +164,11 @@ namespace DennyTalk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(506, 327);
+            this.ClientSize = new System.Drawing.Size(542, 316);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(500, 200);
             this.Name = "DialogForm";
             this.Padding = new System.Windows.Forms.Padding(3, 2, 1, 0);
             this.Text = "Form2";

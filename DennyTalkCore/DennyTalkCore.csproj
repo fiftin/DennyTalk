@@ -46,6 +46,7 @@
     <Compile Include="FilePortReceivedEventArgs.cs" />
     <Compile Include="FileReceiver.cs" />
     <Compile Include="FileSender.cs" />
+    <Compile Include="FileTransferClient.cs" />
     <Compile Include="History.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ICommunicationClient.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="MessageDeliveredEventArgs.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="MessageSendEventArgs.cs" />
-    <Compile Include="Messanger.cs" />
+    <Compile Include="Messenger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
