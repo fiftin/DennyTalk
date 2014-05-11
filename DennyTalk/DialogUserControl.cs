@@ -158,10 +158,10 @@ namespace DennyTalk
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                row.Selected = true;
                 Message msg = (Message)row.DataBoundItem;
                 if (msg.Type == MessageType.FilesRequest && msg.Direction == MessageDirection.In)
                 {
-                    row.Selected = true;
                     if (e.Location.X > 10 && e.Location.X < 50
                         && e.Location.Y < row.Height - 10
                         && e.Location.Y > row.Height - 25)
@@ -179,6 +179,16 @@ namespace DennyTalk
                         req.TelegramListener.SendFilePort(req.Address, -1, msg.ID);
                         req.IsAcknowledged = true;
                         req.IsAccepted = false;
+                    }
+                }
+                else if (msg.Type == MessageType.Files)
+                {
+                    if (e.Location.X > 10 && e.Location.X < 50
+                        && e.Location.Y < row.Height - 10
+                        && e.Location.Y > row.Height - 25)
+                    {
+                        FileTransferClient client = (FileTransferClient)msg.Tag;
+                        client.Cancel();
                     }
                 }
             }

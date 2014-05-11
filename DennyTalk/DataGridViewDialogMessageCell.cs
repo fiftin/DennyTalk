@@ -74,6 +74,24 @@ namespace DennyTalk
                     graphics.DrawString(client.CurrentFileName, font, Brushes.Black, x, y);
                 }
                 height = (int)Math.Ceiling(textSize.Height) + AddHeight;
+                if (client.IsFinished)
+                {
+                    height += 25;
+                    string str;
+                    if (client.IsCanceled)
+                        str = "File transfering canceled";
+                    else if (client.IsRejected)
+                        str = "File transfering rejected remote user";
+                    else
+                        str = "File transfering finished succesfull";
+                    graphics.DrawString(str, font, Brushes.Red, cellBounds.X + 10, cellBounds.Y + height - 25);
+                }
+                else
+                {
+                    height += 25;
+                    graphics.FillRectangle(Brushes.LightGray, cellBounds.X + 10, cellBounds.Y + height - 25, 40, 15);
+                    graphics.DrawString("Cancel", font, Brushes.Black, cellBounds.X + 10, cellBounds.Y + height - 25);
+                }
             }
             if (height < MinHeight)
                 height = MinHeight;

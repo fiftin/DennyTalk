@@ -64,7 +64,7 @@ namespace DennyTalk
                 AuthFileTransfering auth = MemoryHelper.ReadStructureFromStream<AuthFileTransfering>(stream);
                 OnAuth(auth.guid, auth.requestId);
                 int numberOfDownloadedFiles = 0;
-                while (numberOfDownloadedFiles < auth.numberOfFiles)
+                while (numberOfDownloadedFiles < auth.numberOfFiles && !IsCanceled)
                 {
                     TransferedFileInfo fileInfo = MemoryHelper.ReadStructureFromStream<TransferedFileInfo>(stream);
                     string filename = GetFreeFileName(fileInfo.filename);
@@ -76,6 +76,8 @@ namespace DennyTalk
                         byte[] buffer = new byte[1000];
                         while (totalRead <= fileInfo.size)
                         {
+                            if (IsCanceled)
+                                break;
                             int n = (int)Math.Min(buffer.LongLength, fileInfo.size - totalRead);
                             int read = stream.Read(buffer, 0, n);
                             if (read == 0)
@@ -88,12 +90,16 @@ namespace DennyTalk
                     OnLoadComplete(fileInfo.filename);
                     ++numberOfDownloadedFiles;
                 }
-                CurrentFileName = null;
-                CurrentFileNumber = -1;
             }
             catch (Exception ex)
             {
+                Reject();
                 OnError(ex);
+            }
+            finally
+            {
+                Client.Close();
+                OnFinished();
             }
         }
 
@@ -103,7 +109,6 @@ namespace DennyTalk
                 Auth(this, new AuthFileTransferingEventArgs(guid, requestId));
         }
     }
-
 
     public class FileReceiverClientEventArgs : EventArgs
     {

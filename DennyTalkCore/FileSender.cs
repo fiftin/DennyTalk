@@ -17,8 +17,6 @@ namespace DennyTalk
 
         private Thread transferThread;
 
-        public event EventHandler<EventArgs> Rejected;
-
         public FileSenderConnection(string accountGuid, string[] filenames, int requestId)
         {
             FileNames = filenames;
@@ -56,7 +54,7 @@ namespace DennyTalk
                     foreach (string fn in filenames)
                     {
                         CurrentFileNumber++;
-                        if (IsCancel)
+                        if (IsCanceled)
                             break;
                         FileInfo f = new FileInfo(fn);
                         TransferedFileInfo fi = new TransferedFileInfo();
@@ -71,7 +69,7 @@ namespace DennyTalk
                             int read = inputStream.Read(buffer, 0, buffer.Length);
                             while (read > 0)
                             {
-                                if (IsCancel)
+                                if (IsCanceled)
                                     break;
                                 stream.Write(buffer, 0, read);
                                 totalSent += read;
@@ -81,22 +79,19 @@ namespace DennyTalk
                             OnLoadComplete(fi.filename);
                         }
                     }
-                    CurrentFileName = null;
-                    CurrentFileNumber = -1;
+                    client.Close();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Reject();
+                    OnError(ex);
+                }
+                finally
+                {
+                    OnFinished();
                 }
             }
         }
-
-        internal void Reject()
-        {
-            if (Rejected != null)
-                Rejected(this, new EventArgs());
-        }
-
     }
 
     /// <summary>

@@ -11,9 +11,6 @@ namespace DennyTalk
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
     public struct AuthFileTransfering
     {
-        //[FieldOffset(0)]
-        //public int port;
-
         [FieldOffset(0)]
         public int numberOfFiles;
 
@@ -76,7 +73,9 @@ namespace DennyTalk
         public int CurrentFileNumber { get; protected set; }
         public float CurrentFileLoadingPercent { get; private set; }
         public int RequestId { get; set; }
-        public bool IsCancel { get; private set; }
+        public bool IsCanceled { get; private set; }
+        public bool IsRejected { get; private set; }
+        public bool IsFinished { get; private set; }
         public Message Message { get; set; }
 
         private List<string> loadedFiles = new List<string>();
@@ -85,18 +84,40 @@ namespace DennyTalk
         public event EventHandler<ExceptionEventArgs> Error;
         public event EventHandler<FileLoadStartOrCompleteEventArgs> LoadComplete;
         public event EventHandler<EventArgs> Canceled;
-
+        public event EventHandler<EventArgs> Rejected;
 
         public FileTransferClient()
         {
             CurrentFileNumber = -1;
         }
 
+        protected virtual void OnFinished()
+        {
+            CurrentFileName = null;
+            CurrentFileNumber = -1;
+            IsFinished = true;
+            if (Message != null)
+                Message.NotifyPropertyChanged("Text");
+        }
+
+        internal protected void Reject()
+        {
+            IsRejected = true;
+            IsFinished = true;
+            if (Rejected != null)
+                Rejected(this, new EventArgs());
+            if (Message != null)
+                Message.NotifyPropertyChanged("Text");
+        }
+
         public void Cancel()
         {
-            IsCancel = true;
+            IsCanceled = true;
+            IsFinished = true;
             if (Canceled != null)
                 Canceled(this, new EventArgs());
+            if (Message != null)
+                Message.NotifyPropertyChanged("Text");
         }
 
         public string[] GetLoadedFiles()
