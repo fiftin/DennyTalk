@@ -39,18 +39,11 @@ namespace DennyTalk
 
         // flash until the window comes to the foreground 
         const int FLASHW_TIMERNOFG = 12;
-		
-		public static bool IsWindows {
-			get {
-				return Environment.OSVersion.Platform == PlatformID.Win32NT
-					|| Environment.OSVersion.Platform == PlatformID.Win32Windows
-					|| Environment.OSVersion.Platform == PlatformID.Win32S;
-			}
-		}
+
 
         public static void StartBlinking (Form form)
 		{
-			if (IsWindows) {
+			if (Common.CommonUtil.IsWindows) {
 				FLASHWINFO fw = new FLASHWINFO ();
 				fw.cbSize = Convert.ToUInt32 (Marshal.SizeOf (typeof(FLASHWINFO)));
 				fw.hwnd = form.Handle;
@@ -62,7 +55,7 @@ namespace DennyTalk
 
         public static void StopBlinking (Form form)
 		{
-			if (IsWindows) {
+			if (Common.CommonUtil.IsWindows) {
 				FLASHWINFO fw = new FLASHWINFO ();
 				fw.cbSize = Convert.ToUInt32 (Marshal.SizeOf (typeof(FLASHWINFO)));
 				fw.hwnd = form.Handle;

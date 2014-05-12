@@ -84,7 +84,7 @@ namespace DennyTalk
                     string guid = Guid.NewGuid().ToString();
                     addressNode.AddNode("GUID").Value = guid;
                     addressNode.AddNode("Host").Value = "127.0.0.1";
-                    addressNode.AddNode("Port").Value = "1000";
+                    addressNode.AddNode("Port").Value = "1059";
                     accountStorage.AddNode("Nick").Value = "User_" + guid.Substring(0, 4);
                     accountStorage.AddNode("AvatarFileName").Value = "";
                     accountStorage.AddNode("Status").Value = "Offline";

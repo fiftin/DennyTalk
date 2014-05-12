@@ -10,24 +10,29 @@ namespace DennyTalk
     {
         private const int AddHeight = 25;
         private const int MinHeight = 52;
-
-        protected override void Paint(System.Drawing.Graphics graphics, System.Drawing.Rectangle clipBounds, System.Drawing.Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
-        {
-            base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
-
+        protected override void Paint (System.Drawing.Graphics graphics, System.Drawing.Rectangle clipBounds, System.Drawing.Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
+		{
+			Font font = new Font("Courier new", 8, FontStyle.Regular);
+			if (Common.CommonUtil.IsWindows) {
+				base.Paint (graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
+			} else {
+				using (Brush brush = new SolidBrush(cellStyle.ForeColor)) {
+					graphics.DrawString ((string)formattedValue, cellStyle.Font, brush, 
+					                     new RectangleF(cellBounds.X+cellStyle.Padding.Left, cellBounds.Y+cellStyle.Padding.Top,
+				              						   cellBounds.Width-cellStyle.Padding.Horizontal, 0));
+				}
+			}
             Message msg = (Message)DataGridView.Rows[rowIndex].DataBoundItem;
 
             // Отрисовка заголовка
             Brush br = msg.Direction == MessageDirection.In ? Brushes.Blue : Brushes.Red;
             Font nickFont = new Font("Courier new", 9, FontStyle.Bold);
-            Font font = new Font("Courier new", 8, FontStyle.Regular);
-            string nick = string.IsNullOrEmpty(msg.SenderNick) ? msg.FromAddress.Host : msg.SenderNick;
+            
             SizeF nickSize = graphics.MeasureString(msg.SenderNick, nickFont);
             graphics.DrawString(msg.SenderNick, nickFont, br, cellBounds.X + 2, cellBounds.Y + 5);
             if (msg.Delivered)
                 graphics.DrawImage(ImageHelper.Tick, cellBounds.X + 2 + nickSize.Width + 5, cellBounds.Y);
-
-            SizeF textSize = graphics.MeasureString(msg.Text, nickFont, cellBounds.Width);
+            SizeF textSize = graphics.MeasureString(msg.Text, font, cellBounds.Width);
             int height = 0;
             // Высота строки
             if (msg.Type == MessageType.Message)
