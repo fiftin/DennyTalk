@@ -388,7 +388,7 @@ namespace DennyTalk
             notifyIcon1.Tag = address;
             WinFormsPopupAlerts.Alert alert;
             if (cont == null)
-                alert = popupAlertManager1.Alert(new TooltipAlertArg(address.IP.ToString(), message.Text, ImageHelper2.DefaultAvatar));
+                alert = popupAlertManager1.Alert(new TooltipAlertArg(address.Host.ToString(), message.Text, ImageHelper2.DefaultAvatar));
             else
                 alert = popupAlertManager1.Alert(new TooltipAlertArg(cont.Nick, message.Text, cont.Avatar));
             alert.Tag = address;

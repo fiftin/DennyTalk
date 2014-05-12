@@ -12,7 +12,8 @@ namespace DennyTalk
     public class FileSenderConnection : FileTransferClient
     {
         public string[] FileNames { get; private set; }
-        public IPEndPoint RemoteIP { get; private set; }
+        public string RemoteHost { get; private set; }
+        public int RemotePort { get; private set; }
         public string AccountGuid { get; private set; }
 
         private Thread transferThread;
@@ -27,24 +28,25 @@ namespace DennyTalk
             RequestId = requestId;
         }
 
-        public void SendAsync(IPEndPoint ip)
+        public void SendAsync(string remoteHost, int remotePort)
         {
-            RemoteIP = ip;
+            RemoteHost = remoteHost;
+            RemotePort = remotePort;
             transferThread.Start();
         }
 
         private void DoSend()
         {
-            SendByTcp(RemoteIP, FileNames, RequestId);
+            SendByTcp(RemoteHost, RemotePort, FileNames, RequestId);
         }
 
-        protected void SendByTcp(IPEndPoint remoteEP, string[] filenames, int requestId)
+        protected void SendByTcp(string remoteHost, int remotePort, string[] filenames, int requestId)
         {
             using (TcpClient client = new TcpClient())
             {
                 try
                 {
-                    client.Connect(remoteEP);
+                    client.Connect(remoteHost, remotePort);
                     NetworkStream stream = client.GetStream();
                     AuthFileTransfering auth = new AuthFileTransfering();
                     auth.guid = AccountGuid;
@@ -116,7 +118,7 @@ namespace DennyTalk
             {
                 if (e.Port != -1)
                 {
-                    connections[e.RequestId].SendAsync(new IPEndPoint(e.Address.IP, e.Port));
+                    connections[e.RequestId].SendAsync(e.Address.Host, e.Port);
                 }
                 else
                     connections[e.RequestId].Reject();

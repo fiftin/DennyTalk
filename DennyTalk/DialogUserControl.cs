@@ -25,6 +25,8 @@ namespace DennyTalk
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = messages;
             dataGridView1.AutoSize = true;
+
+            UpdateColumn1Width();
         }
 
         public Message FindMessage(int id, MessageType type)
@@ -61,6 +63,7 @@ namespace DennyTalk
                     dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = evenMessageBackColor;
                 }
             }));
+            UpdateColumn1Width();
         }
 
         public ContactEx UserInfo
@@ -221,9 +224,13 @@ namespace DennyTalk
 
         private void DialogUserControl_SizeChanged(object sender, EventArgs e)
         {
-            Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+            UpdateColumn1Width();
         }
 
+        private void UpdateColumn1Width()
+        {
+            Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+        }
 
         int oldDataGridViewHeight = 0;
 

@@ -310,7 +310,7 @@ namespace DennyTalk
             Contact contact = contactManager.GetContactByAddress(e.Address);
             if (contact != null)
             {
-                if (!contact.Address.EqualIPAddress(e.Address)) // Это условие выполнятеся, когда контакт был найден по GUID.
+                if (!contact.Address.EqualHostOrIP(e.Address)) // Это условие выполнятеся, когда контакт был найден по GUID.
                 {                                               // В этом случае нужно предупредить пользователя, что контакт с таким-то GUID изменил свой Host.
                     contact.Address = e.Address;
                 }
@@ -367,20 +367,23 @@ namespace DennyTalk
         void contactManager_ContactChanged(object sender, ContactEventArgs e)
         {
             IStorageNode nodeForUpdate = null;
-            foreach (IStorageNode node in contactStorage.GetNodes("Contact"))
+            lock (contactStorage)
             {
-                IStorageNode addressNode = node["Address"];
-                int port = int.Parse(addressNode["Port"].Value.ToString());
-                Address address = new Address((string)addressNode["Host"].Value, port, (string)addressNode["GUID"].Value);
-                Address otherAddr;
-                if (e.PropertyName == "Address")
-                    otherAddr = (Address)e.OldValue;
-                else
-                    otherAddr = e.Contact.Address;
-                if (address.Equals(otherAddr))
+                foreach (IStorageNode node in contactStorage.GetNodes("Contact"))
                 {
-                    nodeForUpdate = node;
-                    break;
+                    IStorageNode addressNode = node["Address"];
+                    int port = int.Parse(addressNode["Port"].Value.ToString());
+                    Address address = new Address((string)addressNode["Host"].Value, port, (string)addressNode["GUID"].Value);
+                    Address otherAddr;
+                    if (e.PropertyName == "Address")
+                        otherAddr = (Address)e.OldValue;
+                    else
+                        otherAddr = e.Contact.Address;
+                    if (address.Equals(otherAddr))
+                    {
+                        nodeForUpdate = node;
+                        break;
+                    }
                 }
             }
             if (nodeForUpdate != null)
@@ -409,40 +412,49 @@ namespace DennyTalk
                         nodeForUpdate["StatusText"].Value = e.Contact.StatusText;
                         break;
                 }
-                contactStorage.Save();
+                lock (contactStorage)
+                {
+                    contactStorage.Save();
+                }
             }
         }
 
         void contactManager_ContactRemoved(object sender, ContactEventArgs e)
         {
             IStorageNode nodeForRemove = null;
-            foreach (IStorageNode node in contactStorage.GetNodes("Contact"))
+            lock (contactStorage)
             {
-                IStorageNode addressNode = node["Address"];
-                int port = int.Parse(addressNode["Port"].Value.ToString());
-                Address address = new Address((string)addressNode["Host"].Value, port, (string)addressNode["GUID"].Value);
-                if (address.Equals(e.Contact.Address))
+                foreach (IStorageNode node in contactStorage.GetNodes("Contact"))
                 {
-                    nodeForRemove = node;
-                    break;
+                    IStorageNode addressNode = node["Address"];
+                    int port = int.Parse(addressNode["Port"].Value.ToString());
+                    Address address = new Address((string)addressNode["Host"].Value, port, (string)addressNode["GUID"].Value);
+                    if (address.Equals(e.Contact.Address))
+                    {
+                        nodeForRemove = node;
+                        break;
+                    }
                 }
-            }
-            if (nodeForRemove != null)
-            {
-                contactStorage.Remove(nodeForRemove);
-                contactStorage.Save();
+                if (nodeForRemove != null)
+                {
+                    contactStorage.Remove(nodeForRemove);
+                    contactStorage.Save();
+                }
             }
         }
 
         void contactManager_ContactAdded(object sender, ContactEventArgs e)
         {
-            IStorageNode nodeContact = contactStorage.AddNode("Contact");
-            nodeContact.AddNode("Nick").Value = e.Contact.Nick;
-            IStorageNode addressNode = nodeContact.AddNode("Address");
-            addressNode.AddNode("Host").Value = e.Contact.Address.Host;
-            addressNode.AddNode("GUID").Value = e.Contact.Address.Guid;
-            addressNode.AddNode("Port").Value = e.Contact.Address.Port;
-            contactStorage.Save();
+            lock (contactStorage)
+            {
+                IStorageNode nodeContact = contactStorage.AddNode("Contact");
+                nodeContact.AddNode("Nick").Value = e.Contact.Nick;
+                IStorageNode addressNode = nodeContact.AddNode("Address");
+                addressNode.AddNode("Host").Value = e.Contact.Address.Host;
+                addressNode.AddNode("GUID").Value = e.Contact.Address.Guid;
+                addressNode.AddNode("Port").Value = e.Contact.Address.Port;
+                contactStorage.Save();
+            }
         }
 
         #endregion

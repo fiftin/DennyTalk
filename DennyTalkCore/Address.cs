@@ -11,7 +11,6 @@ namespace DennyTalk
         private string host;
         private string guid;
         private IPHostEntry hostEntry;
-        private bool hostEntryIsNull;
 
         public Address(IPEndPoint endPoint)
         {
@@ -60,19 +59,32 @@ namespace DennyTalk
             }
         }
 
+        private static List<string> invalidHosts = new List<string>();
+
         public IPHostEntry HostEntry
         {
             get
             {
-                if (hostEntry == null && !hostEntryIsNull)
+                if (hostEntry == null)
                 {
-                    try
+                    bool isInvalidHost;
+                    lock (invalidHosts)
                     {
-                        hostEntry = Dns.GetHostEntry(host);
+                        isInvalidHost = invalidHosts.Contains(host.ToLower());
                     }
-                    catch (Exception)
+                    if (!isInvalidHost)
                     {
-                        hostEntryIsNull = true;
+                        try
+                        {
+                            hostEntry = Dns.GetHostEntry(host);
+                        }
+                        catch (Exception)
+                        {
+                            lock (invalidHosts)
+                            {
+                                invalidHosts.Add(host.ToLower());
+                            }
+                        }
                     }
                 }
                 return hostEntry;
@@ -82,13 +94,17 @@ namespace DennyTalk
         public bool Equals(Address other)
         {
             return !string.IsNullOrEmpty(Guid) && !string.IsNullOrEmpty(other.Guid) && Guid == other.Guid 
-                || EqualIPAddress(other);
+                || EqualHostOrIP(other);
         }
 
-        public bool EqualIPAddress(Address other)
+        public bool EqualHostOrIP(Address other)
         {
-            bool eq = false;
-            if (HostEntry != null)
+            bool eq = Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
+                || Array.Exists(other.Addresses, x => x.Equals(IP))
+                || Array.Exists(Addresses, x => x.Equals(other.IP))
+                || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
+                || IP.Equals(other.IP);
+            if (!eq && HostEntry != null)
             {
                 foreach (IPAddress addr in HostEntry.AddressList)
                 {
@@ -99,17 +115,8 @@ namespace DennyTalk
                     }
                 }
             }
-            eq = eq
-                || Array.Exists(other.Addresses, x => x.Equals(IP))
-                || Array.Exists(Addresses, x => x.Equals(other.IP))
-                || HostEntry != null && other.HostEntry != null && HostEntry.HostName.Equals(other.HostEntry.HostName) 
-                || IP.Equals(other.IP) 
-                || Host.Equals(other.Host, StringComparison.InvariantCultureIgnoreCase)
-                ;
             if (eq && Port == other.Port)
-            {
                 return true;
-            }
             return false;
         }
 
