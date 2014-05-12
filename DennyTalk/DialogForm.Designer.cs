@@ -50,16 +50,16 @@ namespace DennyTalk
             this.panel1.Controls.Add(this.btnSend);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 251);
+            this.panel1.Location = new System.Drawing.Point(3, 371);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(538, 65);
+            this.panel1.Size = new System.Drawing.Size(682, 65);
             this.panel1.TabIndex = 3;
             // 
             // btnSendFile
             // 
             this.btnSendFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSendFile.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSendFile.Location = new System.Drawing.Point(443, 34);
+            this.btnSendFile.Location = new System.Drawing.Point(587, 34);
             this.btnSendFile.Name = "btnSendFile";
             this.btnSendFile.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.btnSendFile.Size = new System.Drawing.Size(92, 28);
@@ -74,7 +74,7 @@ namespace DennyTalk
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.Image = global::DennyTalk.Properties.Resources.email_go;
             this.btnSend.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSend.Location = new System.Drawing.Point(443, 3);
+            this.btnSend.Location = new System.Drawing.Point(587, 3);
             this.btnSend.Name = "btnSend";
             this.btnSend.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.btnSend.Size = new System.Drawing.Size(92, 28);
@@ -86,15 +86,15 @@ namespace DennyTalk
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox1.Location = new System.Drawing.Point(0, 3);
             this.textBox1.MaxLength = 2000;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(437, 59);
+            this.textBox1.Size = new System.Drawing.Size(581, 59);
             this.textBox1.TabIndex = 0;
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
@@ -107,7 +107,7 @@ namespace DennyTalk
             this.tabControl1.Location = new System.Drawing.Point(3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(538, 249);
+            this.tabControl1.Size = new System.Drawing.Size(682, 369);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             this.tabControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDown);
@@ -164,7 +164,7 @@ namespace DennyTalk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(542, 316);
+            this.ClientSize = new System.Drawing.Size(686, 436);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

@@ -24,10 +24,7 @@ namespace DennyTalk
             InitializeComponent();
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = messages;
-        }
-
-        private void DialogUserControl_Load(object sender, EventArgs e)
-        {
+            dataGridView1.AutoSize = true;
         }
 
         public Message FindMessage(int id, MessageType type)
@@ -197,7 +194,11 @@ namespace DennyTalk
         private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
-                dataGridView1.BeginEdit(true);  
+            {
+                Message msg = (Message)dataGridView1.Rows[e.RowIndex].DataBoundItem;
+                if (msg.Type == MessageType.Message)
+                    dataGridView1.BeginEdit(true);
+            }
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -215,6 +216,23 @@ namespace DennyTalk
             {
                 oldValue = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 copyToolStripMenuItem.ShortcutKeys = Keys.None;
+            }
+        }
+
+        private void DialogUserControl_SizeChanged(object sender, EventArgs e)
+        {
+            Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+        }
+
+
+        int oldDataGridViewHeight = 0;
+
+        private void dataGridView1_SizeChanged(object sender, EventArgs e)
+        {
+            if (Math.Abs(oldDataGridViewHeight-dataGridView1.Height) > 30)
+            {
+                panel1.VerticalScroll.Value = panel1.VerticalScroll.Maximum;
+                oldDataGridViewHeight = dataGridView1.Height;
             }
         }
     }

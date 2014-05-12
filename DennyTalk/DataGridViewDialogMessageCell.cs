@@ -61,7 +61,7 @@ namespace DennyTalk
                 {
                     int y = cellBounds.Y + 20 + 14 + i * 14;
                     int x = cellBounds.X + 20;
-                    graphics.FillRectangle(Brushes.Blue, x, y, cellBounds.Width - 40, 14);
+                    graphics.FillRectangle(Brushes.BlueViolet, x, y, cellBounds.Width - 40, 14);
                     graphics.DrawImage(ImageHelper.Tick, x + cellBounds.Width - 35, y, 15, 15);
                     graphics.DrawString(downloaded[i], font, Brushes.Black, x, y);
                 }
@@ -70,7 +70,7 @@ namespace DennyTalk
                     int y = cellBounds.Y + 20 + 14 + client.CurrentFileNumber * 14;
                     int x = cellBounds.X + 20;
                     graphics.FillRectangle(Brushes.White, x, y, cellBounds.Width - 40, 14);
-                    graphics.FillRectangle(Brushes.Blue, x, y, (cellBounds.Width - 40) * client.CurrentFileLoadingPercent / 100, 14);
+                    graphics.FillRectangle(Brushes.BlueViolet, x, y, (cellBounds.Width - 40) * client.CurrentFileLoadingPercent / 100, 14);
                     graphics.DrawString(client.CurrentFileName, font, Brushes.Black, x, y);
                 }
                 height = (int)Math.Ceiling(textSize.Height) + AddHeight;
@@ -84,7 +84,7 @@ namespace DennyTalk
                         str = "File transfering rejected remote user";
                     else
                         str = "File transfering finished succesfull";
-                    graphics.DrawString(str, font, Brushes.Red, cellBounds.X + 10, cellBounds.Y + height - 25);
+                    graphics.DrawString(str, font, Brushes.BlueViolet, cellBounds.X + 10, cellBounds.Y + height - 25);
                 }
                 else
                 {

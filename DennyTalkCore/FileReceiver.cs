@@ -134,7 +134,7 @@ namespace DennyTalk
         public FileReceiver(string pathForSave)
         {
             this.PathForSave = pathForSave;
-            listener = new TcpListener(IPAddress.Loopback, 2000);
+            listener = new TcpListener(0);
         }
 
         public bool IsClosed
