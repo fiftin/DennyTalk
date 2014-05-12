@@ -229,7 +229,7 @@ namespace DennyTalk
 
         private void UpdateColumn1Width()
         {
-            Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+            //Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
         }
 
         int oldDataGridViewHeight = 0;

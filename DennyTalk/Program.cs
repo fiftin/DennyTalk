@@ -53,7 +53,7 @@ namespace DennyTalk
         [STAThread]
         static void Main()
         {
-            Common.Log.StartLoggingUnhandledException();
+            //Common.Log.StartLoggingUnhandledException();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -62,9 +62,9 @@ namespace DennyTalk
             try
             {
                 System.Reflection.Assembly exe = System.Reflection.Assembly.GetEntryAssembly();
-                string optionsFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "options.xml";
-                string contactsFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "contacts.xml";
-                string accountFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "account.xml";
+                string optionsFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "options.xml";
+                string contactsFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "contacts.xml";
+                string accountFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "account.xml";
                 if (!System.IO.File.Exists(optionsFileName))
                 {
                     System.IO.File.WriteAllText(optionsFileName, DennyTalk.Properties.Resources.options);

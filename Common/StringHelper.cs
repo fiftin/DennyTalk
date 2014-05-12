@@ -39,14 +39,14 @@ namespace Common
             string[] strs = str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             Type type = typeof(T);
-            if (type == typeof(int))
+            if (type.Equals(typeof(int)))
             {
                 return Array.ConvertAll(strs, delegate(string s)
                 {
                     return ParseInt(s);
                 });
             }
-            else if (type == typeof(int))
+            else if (type.Equals(typeof(int)))
             {
             }
 

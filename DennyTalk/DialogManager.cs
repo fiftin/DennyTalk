@@ -135,9 +135,9 @@ namespace DennyTalk
         void telegramListener_FilePortReceived(object sender, FilePortReceivedEventArgs e)
         {
             Message msg = FindMessage(e.RequestId, MessageType.FilesRequest, (ContactEx)contactManager.GetContactByAddress(e.Address));
-            FilePortRequestInfo info = (FilePortRequestInfo)msg.Tag;
             if (msg != null)
             {
+				FilePortRequestInfo info = (FilePortRequestInfo)msg.Tag;
                 if (info.IsAcknowledged && info.IsAccepted)
                 {
                     StringBuilder b = new StringBuilder();

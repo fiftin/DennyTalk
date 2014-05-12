@@ -331,7 +331,7 @@ namespace DennyTalk
 
         void telegramListener_UserInfoRequest(object sender, RequestReceivedEventArgs e)
         {
-            telegramListener.SendInfo(e.Address, account.Avatar, account.Nick, account.Status, account.StatusText);
+            //telegramListener.SendInfo(e.Address, account.Avatar, account.Nick, account.Status, account.StatusText);
         }
 
         void telegramListener_UserStatusReceived(object sender, UserStatusReceivedEventArgs e)

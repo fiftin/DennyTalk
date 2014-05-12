@@ -283,15 +283,15 @@ namespace DennyTalk
         public TelegramSendResult Send<T>(Address address, T data) where T : struct
         {
             TelegramHeaderType type;
-            if (typeof(T) == typeof(UserInfo))
+            if (typeof(T).Equals(typeof(UserInfo)))
                 type = TelegramHeaderType.UserInfo;
-            else if (typeof(T) == typeof(TelegramDelivery))
+            else if (typeof(T).Equals(typeof(TelegramDelivery)))
                 type = TelegramHeaderType.MessageDelivered;
-            else if (typeof(T) == typeof(UserStatusSturct))
+            else if (typeof(T).Equals(typeof(UserStatusSturct)))
                 type = TelegramHeaderType.UserStatus;
-            else if (typeof(T) == typeof(FilePort))
+            else if (typeof(T).Equals(typeof(FilePort)))
                 type = TelegramHeaderType.FilePort;
-            else if (typeof(T) == typeof(FilePortRequest))
+            else if (typeof(T).Equals(typeof(FilePortRequest)))
                 type = TelegramHeaderType.FilePortRequest;
             else
                 throw new Exception("T is unknown type");
