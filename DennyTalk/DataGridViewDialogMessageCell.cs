@@ -16,10 +16,23 @@ namespace DennyTalk
 			if (Common.CommonUtil.IsWindows) {
 				base.Paint (graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
 			} else {
-				using (Brush brush = new SolidBrush(cellStyle.ForeColor)) {
-					graphics.DrawString ((string)formattedValue, cellStyle.Font, brush, 
-					                     new RectangleF(cellBounds.X+cellStyle.Padding.Left, cellBounds.Y+cellStyle.Padding.Top,
-				              						   cellBounds.Width-cellStyle.Padding.Horizontal, 0));
+				using (Brush selectedBackBrush = new SolidBrush(cellStyle.SelectionBackColor)) {
+					using (Brush backBrush = new SolidBrush(cellStyle.BackColor)) {
+						Brush currentBackBrush = backBrush;
+						if ((cellState & DataGridViewElementStates.Selected) == DataGridViewElementStates.Selected)
+							currentBackBrush = selectedBackBrush;
+						graphics.FillRectangle(currentBackBrush, cellBounds);
+					}
+				}
+				using (Brush selectedForeBrush = new SolidBrush(cellStyle.SelectionForeColor)){
+					using (Brush foreBrush = new SolidBrush(cellStyle.ForeColor)) {
+						Brush textBrush = foreBrush;
+						if ((cellState & DataGridViewElementStates.Selected) == DataGridViewElementStates.Selected)
+							textBrush = selectedForeBrush;
+						graphics.DrawString ((string)formattedValue, cellStyle.Font, textBrush, 
+		                     new RectangleF(cellBounds.X+cellStyle.Padding.Left, cellBounds.Y + cellStyle.Padding.Top,
+	      						   cellBounds.Width-cellStyle.Padding.Horizontal, 0));
+					}
 				}
 			}
             Message msg = (Message)DataGridView.Rows[rowIndex].DataBoundItem;

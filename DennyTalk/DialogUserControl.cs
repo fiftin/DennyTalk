@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using Common;
 
 namespace DennyTalk
 {
@@ -26,11 +27,19 @@ namespace DennyTalk
             dataGridView1.DataSource = messages;
             dataGridView1.AutoSize = true;
 			panel1.MouseDown +=	panel1_MouseDown;
-            UpdateColumn1Width();
+            //UpdateColumn1Width();
         }
 
 		private void panel1_MouseDown (object sender, MouseEventArgs e)
 		{
+
+			//if (!CommonUtil.IsWindows && panel1.Height < dataGridView1.Height) {
+			//	panel1.VerticalScroll.Maximum = dataGridView1.Height;
+			//	panel1.VerticalScroll.Value = panel1.VerticalScroll.Maximum;
+			//	dataGridView1.Top = -(dataGridView1.Height);
+			//}
+			//Console.WriteLine("panel1 {0}, dataGridView1 {1} ScrollMax {2}", panel1.Height, 
+			//                  dataGridView1.Height, panel1.VerticalScroll.Maximum);
 		}
 
         public Message FindMessage(int id, MessageType type)
@@ -73,20 +82,24 @@ namespace DennyTalk
                     dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[2].Style.BackColor = evenMessageBackColor;
                 }
             }));
+
             UpdateColumn1Width();
-
-			if (//panel1.VerticalScroll.Maximum > dataGridView1.Height
-			    //&& 
-			    panel1.Height < dataGridView1.Height) {
-
-				panel1.VerticalScroll.Maximum = dataGridView1.Height;
-				panel1.VerticalScroll.Value = panel1.VerticalScroll.Maximum;
-				dataGridView1.Top = -(dataGridView1.Height);
-			}
-
-			Console.WriteLine("panel1 {0}, dataGridView1 {1}", panel1.Height, dataGridView1.Height);
+			FitPanelToDataGridViewSize();
 
         }
+
+		private void FitPanelToDataGridViewSize ()
+		{
+			if (!CommonUtil.IsWindows && (panel1.Height < dataGridView1.Height
+			                              || panel1.Height < panel1.VerticalScroll.Maximum)) {
+				panel1.VerticalScroll.Maximum = dataGridView1.Height;
+				panel1.VerticalScroll.Value = panel1.VerticalScroll.Maximum;
+
+				dataGridView1.Top = -(dataGridView1.Height);
+			}
+			Console.WriteLine("panel1 {0}, dataGridView1 {1} ScrollMax {2}", panel1.Height, 
+			                  dataGridView1.Height, panel1.VerticalScroll.Maximum);
+		}
 
         public ContactEx UserInfo
         {
@@ -243,18 +256,18 @@ namespace DennyTalk
 
         private void DialogUserControl_SizeChanged(object sender, EventArgs e)
         {
-            UpdateColumn1Width();
+			if (dataGridView1.Rows.Count > 0)
+            	UpdateColumn1Width();
         }
 
         private void UpdateColumn1Width ()
 		{
-			//Console.WriteLine("dataGridView1.Location.X " + dataGridView1.Location.X);
-			//Console.WriteLine("panel1.VerticalScroll.Maximum" + panel1.VerticalScroll.Maximum);
-			//int w = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
-			//if (w >= Column1.MinimumWidth) {
-			//	Column1.Width = w;
-			//	Console.WriteLine (w);
-			//}
+			int w = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+			Console.WriteLine (w);
+			if (w > Column1.MinimumWidth) {
+				Column1.Width = w;
+				dataGridView1.Width = panel1.ClientSize.Width - 20;
+			}
         }
 
         int oldDataGridViewHeight = 0;

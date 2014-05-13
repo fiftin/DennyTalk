@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Common;
 
 namespace DennyTalk
 {
@@ -14,6 +15,8 @@ namespace DennyTalk
         public ConfigurationDialog()
         {
             InitializeComponent();
+			if (!CommonUtil.IsWindows)
+				chkAutorun.Enabled = false;
         }
 
         private int port;
