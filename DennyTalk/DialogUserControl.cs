@@ -79,14 +79,10 @@ namespace DennyTalk
                 if (contactInfo != value)
                 {
                     if (contactInfo != null)
-                    {
                         contactInfo.PropertyChange -= new EventHandler<PropertyChangeNotifierEventArgs>(contactInfo_PropertyChange);
-                    }
                     contactInfo = value;
                     if (contactInfo != null)
-                    {
                         contactInfo.PropertyChange += new EventHandler<PropertyChangeNotifierEventArgs>(contactInfo_PropertyChange);
-                    }
                 }
             }
         }
@@ -130,9 +126,7 @@ namespace DennyTalk
         protected virtual void NotifyPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             if (PropertyChange != null)
-            {
                 PropertyChange(this, new PropertyChangeNotifierEventArgs(propertyName, oldValue, newValue));
-            }
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
