@@ -12,7 +12,7 @@ namespace DennyTalk
         private const int MinHeight = 52;
         protected override void Paint (System.Drawing.Graphics graphics, System.Drawing.Rectangle clipBounds, System.Drawing.Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
 		{
-			Font font = new Font("Courier new", 8, FontStyle.Regular);
+			Font font = cellStyle.Font;
 			if (Common.CommonUtil.IsWindows) {
 				base.Paint (graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
 			} else {
@@ -57,7 +57,7 @@ namespace DennyTalk
                 if (msg.Direction == MessageDirection.In)
                 {
                     DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
-                    if (!req.IsAcknowledged)
+					if (!req.IsAcknowledged)
                     {
                         height = (int)Math.Ceiling(textSize.Height) + 50;
                         graphics.FillRectangle(Brushes.LightGray, cellBounds.X + 10, cellBounds.Y + height - 25, 40, 15);
@@ -75,23 +75,24 @@ namespace DennyTalk
             {
                 FileTransferClient client = (FileTransferClient)msg.Tag;
                 string[] downloaded = client.GetLoadedFiles();
+				int charHeight = (int)graphics.MeasureString("A", font).Height;// (int)Math.Ceiling(font.GetHeight());
                 for (int i = 0; i < downloaded.Length; i++)
                 {
-                    int y = cellBounds.Y + 20 + 14 + i * 14;
+                    int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + i * charHeight;
                     int x = cellBounds.X + 20;
-                    graphics.FillRectangle(Brushes.BlueViolet, x, y, cellBounds.Width - 40, 14);
+                    graphics.FillRectangle(Brushes.BlueViolet, x, y, cellBounds.Width - 40, charHeight);
                     graphics.DrawImage(ImageHelper.Tick, x + cellBounds.Width - 35, y, 15, 15);
                     graphics.DrawString(downloaded[i], font, Brushes.Black, x, y);
                 }
                 if (client.CurrentFileName != null)
                 {
-                    int y = cellBounds.Y + 20 + 14 + client.CurrentFileNumber * 14;
+                    int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + client.CurrentFileNumber * charHeight;
                     int x = cellBounds.X + 20;
-                    graphics.FillRectangle(Brushes.White, x, y, cellBounds.Width - 40, 14);
-                    graphics.FillRectangle(Brushes.BlueViolet, x, y, (cellBounds.Width - 40) * client.CurrentFileLoadingPercent / 100, 14);
+                    graphics.FillRectangle(Brushes.White, x, y, cellBounds.Width - 40, charHeight);
+                    graphics.FillRectangle(Brushes.BlueViolet, x, y, (cellBounds.Width - 40) * client.CurrentFileLoadingPercent / 100, charHeight);
                     graphics.DrawString(client.CurrentFileName, font, Brushes.Black, x, y);
                 }
-                height = (int)Math.Ceiling(textSize.Height) + AddHeight;
+                height = (int)Math.Ceiling(Math.Max(textSize.Height, downloaded.Length * charHeight)) + AddHeight;
                 if (client.IsFinished)
                 {
                     height += 25;

@@ -129,7 +129,7 @@ namespace DennyTalk
             this.onlineToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.comments;
             this.onlineToolStripMenuItem.Name = "onlineToolStripMenuItem";
             this.onlineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.onlineToolStripMenuItem.Text = "В сети";
+            this.onlineToolStripMenuItem.Text = "Online";
             this.onlineToolStripMenuItem.Click += new System.EventHandler(this.onlineToolStripMenuItem_Click);
             // 
             // offlineToolStripMenuItem
@@ -137,7 +137,7 @@ namespace DennyTalk
             this.offlineToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.offline;
             this.offlineToolStripMenuItem.Name = "offlineToolStripMenuItem";
             this.offlineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.offlineToolStripMenuItem.Text = "Не в сети";
+            this.offlineToolStripMenuItem.Text = "Offline";
             this.offlineToolStripMenuItem.Click += new System.EventHandler(this.offlineToolStripMenuItem_Click);
             // 
             // awayToolStripMenuItem
@@ -145,7 +145,7 @@ namespace DennyTalk
             this.awayToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.away;
             this.awayToolStripMenuItem.Name = "awayToolStripMenuItem";
             this.awayToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.awayToolStripMenuItem.Text = "Отошел";
+            this.awayToolStripMenuItem.Text = "Away";
             this.awayToolStripMenuItem.Click += new System.EventHandler(this.awayToolStripMenuItem_Click);
             // 
             // dndToolStripMenuItem
@@ -153,7 +153,7 @@ namespace DennyTalk
             this.dndToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.dnd;
             this.dndToolStripMenuItem.Name = "dndToolStripMenuItem";
             this.dndToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.dndToolStripMenuItem.Text = "Не беспокоить";
+            this.dndToolStripMenuItem.Text = "Do not disturb";
             this.dndToolStripMenuItem.Click += new System.EventHandler(this.dndToolStripMenuItem_Click);
             // 
             // notAvaliableToolStripMenuItem
@@ -161,7 +161,7 @@ namespace DennyTalk
             this.notAvaliableToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.not_available;
             this.notAvaliableToolStripMenuItem.Name = "notAvaliableToolStripMenuItem";
             this.notAvaliableToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.notAvaliableToolStripMenuItem.Text = "Не доступен";
+            this.notAvaliableToolStripMenuItem.Text = "Not avaliable";
             this.notAvaliableToolStripMenuItem.Click += new System.EventHandler(this.notAvaliableToolStripMenuItem_Click);
             // 
             // occupiedToolStripMenuItem
@@ -169,7 +169,7 @@ namespace DennyTalk
             this.occupiedToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.occupied;
             this.occupiedToolStripMenuItem.Name = "occupiedToolStripMenuItem";
             this.occupiedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.occupiedToolStripMenuItem.Text = "Занят";
+            this.occupiedToolStripMenuItem.Text = "Occupied";
             this.occupiedToolStripMenuItem.Click += new System.EventHandler(this.occupiedToolStripMenuItem_Click);
             // 
             // eatingToolStripMenuItem
@@ -177,7 +177,7 @@ namespace DennyTalk
             this.eatingToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.eating;
             this.eatingToolStripMenuItem.Name = "eatingToolStripMenuItem";
             this.eatingToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.eatingToolStripMenuItem.Text = "Ем";
+            this.eatingToolStripMenuItem.Text = "Eating";
             this.eatingToolStripMenuItem.Click += new System.EventHandler(this.eatingToolStripMenuItem_Click);
             // 
             // freeForChatToolStripMenuItem
@@ -185,7 +185,7 @@ namespace DennyTalk
             this.freeForChatToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.free_for_chat;
             this.freeForChatToolStripMenuItem.Name = "freeForChatToolStripMenuItem";
             this.freeForChatToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.freeForChatToolStripMenuItem.Text = "Готов пообщаться";
+            this.freeForChatToolStripMenuItem.Text = "Free for chat";
             this.freeForChatToolStripMenuItem.Click += new System.EventHandler(this.freeForChatToolStripMenuItem_Click);
             // 
             // atWorkToolStripMenuItem
@@ -193,7 +193,7 @@ namespace DennyTalk
             this.atWorkToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.at_work;
             this.atWorkToolStripMenuItem.Name = "atWorkToolStripMenuItem";
             this.atWorkToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.atWorkToolStripMenuItem.Text = "На работе";
+            this.atWorkToolStripMenuItem.Text = "At work";
             this.atWorkToolStripMenuItem.Click += new System.EventHandler(this.atWorkToolStripMenuItem_Click);
             // 
             // atHomeToolStripMenuItem
@@ -201,7 +201,7 @@ namespace DennyTalk
             this.atHomeToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.at_home;
             this.atHomeToolStripMenuItem.Name = "atHomeToolStripMenuItem";
             this.atHomeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.atHomeToolStripMenuItem.Text = "Дома";
+            this.atHomeToolStripMenuItem.Text = "At home";
             this.atHomeToolStripMenuItem.Click += new System.EventHandler(this.atHomeToolStripMenuItem_Click);
             // 
             // angryToolStripMenuItem
@@ -209,7 +209,7 @@ namespace DennyTalk
             this.angryToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.angry;
             this.angryToolStripMenuItem.Name = "angryToolStripMenuItem";
             this.angryToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.angryToolStripMenuItem.Text = "Злой";
+            this.angryToolStripMenuItem.Text = "Angry";
             this.angryToolStripMenuItem.Click += new System.EventHandler(this.angryToolStripMenuItem_Click);
             // 
             // badMoodToolStripMenuItem
@@ -217,7 +217,7 @@ namespace DennyTalk
             this.badMoodToolStripMenuItem.Image = global::DennyTalk.Properties.Resources.bad_mood;
             this.badMoodToolStripMenuItem.Name = "badMoodToolStripMenuItem";
             this.badMoodToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.badMoodToolStripMenuItem.Text = "Депрессия";
+            this.badMoodToolStripMenuItem.Text = "Bad mood";
             this.badMoodToolStripMenuItem.Click += new System.EventHandler(this.badMoodToolStripMenuItem_Click);
             // 
             // panel1
