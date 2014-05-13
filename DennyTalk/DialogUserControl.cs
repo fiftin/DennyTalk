@@ -31,10 +31,13 @@ namespace DennyTalk
 
         public Message FindMessage(int id, MessageType type)
         {
-            foreach (Message msg in messages)
+            lock (messages)
             {
-                if (msg.ID == id && msg.Type == type)
-                    return msg;
+                foreach (Message msg in messages)
+                {
+                    if (msg.ID == id && msg.Type == type)
+                        return msg;
+                }
             }
             return null;
         }
@@ -53,7 +56,10 @@ namespace DennyTalk
             }
             Invoke(new MethodInvoker(() =>
             {
-                this.messages.Add(msg);
+                lock (messages)
+                {
+                    this.messages.Add(msg);
+                }
                 dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
                 int o = dataGridView1.Rows.Count % 2;
                 if (o == 0)
@@ -143,12 +149,15 @@ namespace DennyTalk
 
         public void SetMessageDelivered(int messageID)
         {
-            foreach (Message msg in messages)
+            lock (messages)
             {
-                if (msg.ID == messageID)
+                foreach (Message msg in messages)
                 {
-                    msg.Delivered = true;
-                    Invoke(new MethodInvoker(() =>  msg.NotifyPropertyChanged("Text")));
+                    if (msg.ID == messageID)
+                    {
+                        msg.Delivered = true;
+                        Invoke(new MethodInvoker(() => msg.NotifyPropertyChanged("Text")));
+                    }
                 }
             }
         }
