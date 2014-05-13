@@ -31,7 +31,6 @@ namespace DennyTalk
 
 		private void panel1_MouseDown (object sender, MouseEventArgs e)
 		{
-			Console.WriteLine("panel1_MouseDown " + dataGridView1.Location.X);
 		}
 
         public Message FindMessage(int id, MessageType type)
@@ -75,6 +74,18 @@ namespace DennyTalk
                 }
             }));
             UpdateColumn1Width();
+
+			if (//panel1.VerticalScroll.Maximum > dataGridView1.Height
+			    //&& 
+			    panel1.Height < dataGridView1.Height) {
+
+				panel1.VerticalScroll.Maximum = dataGridView1.Height;
+				panel1.VerticalScroll.Value = panel1.VerticalScroll.Maximum;
+				dataGridView1.Top = -(dataGridView1.Height);
+			}
+
+			Console.WriteLine("panel1 {0}, dataGridView1 {1}", panel1.Height, dataGridView1.Height);
+
         }
 
         public ContactEx UserInfo
@@ -237,8 +248,9 @@ namespace DennyTalk
 
         private void UpdateColumn1Width ()
 		{
-			int w = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
-
+			//Console.WriteLine("dataGridView1.Location.X " + dataGridView1.Location.X);
+			//Console.WriteLine("panel1.VerticalScroll.Maximum" + panel1.VerticalScroll.Maximum);
+			//int w = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
 			//if (w >= Column1.MinimumWidth) {
 			//	Column1.Width = w;
 			//	Console.WriteLine (w);
