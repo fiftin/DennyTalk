@@ -53,7 +53,7 @@ namespace DennyTalk
         [STAThread]
         static void Main()
         {
-            Common.Log.StartLoggingUnhandledException();
+            //Common.Log.StartLoggingUnhandledException();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -62,9 +62,9 @@ namespace DennyTalk
             try
             {
                 System.Reflection.Assembly exe = System.Reflection.Assembly.GetEntryAssembly();
-                string optionsFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "options.xml";
-                string contactsFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "contacts.xml";
-                string accountFileName = System.IO.Path.GetDirectoryName(exe.Location) + "\\" + "account.xml";
+                string optionsFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "options.xml";
+                string contactsFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "contacts.xml";
+                string accountFileName = System.IO.Path.GetDirectoryName(exe.Location) + System.IO.Path.DirectorySeparatorChar + "account.xml";
                 if (!System.IO.File.Exists(optionsFileName))
                 {
                     System.IO.File.WriteAllText(optionsFileName, DennyTalk.Properties.Resources.options);
@@ -84,7 +84,7 @@ namespace DennyTalk
                     string guid = Guid.NewGuid().ToString();
                     addressNode.AddNode("GUID").Value = guid;
                     addressNode.AddNode("Host").Value = "127.0.0.1";
-                    addressNode.AddNode("Port").Value = "1000";
+                    addressNode.AddNode("Port").Value = "1059";
                     accountStorage.AddNode("Nick").Value = "User_" + guid.Substring(0, 4);
                     accountStorage.AddNode("AvatarFileName").Value = "";
                     accountStorage.AddNode("Status").Value = "Offline";

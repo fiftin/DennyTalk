@@ -25,9 +25,14 @@ namespace DennyTalk
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = messages;
             dataGridView1.AutoSize = true;
-
+			panel1.MouseDown +=	panel1_MouseDown;
             UpdateColumn1Width();
         }
+
+		private void panel1_MouseDown (object sender, MouseEventArgs e)
+		{
+			Console.WriteLine("panel1_MouseDown " + dataGridView1.Location.X);
+		}
 
         public Message FindMessage(int id, MessageType type)
         {
@@ -236,9 +241,14 @@ namespace DennyTalk
             UpdateColumn1Width();
         }
 
-        private void UpdateColumn1Width()
-        {
-            Column1.Width = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+        private void UpdateColumn1Width ()
+		{
+			int w = panel1.ClientSize.Width - (ColumnAvatar.Width + ColumnTime.Width + 20);
+
+			//if (w >= Column1.MinimumWidth) {
+			//	Column1.Width = w;
+			//	Console.WriteLine (w);
+			//}
         }
 
         int oldDataGridViewHeight = 0;

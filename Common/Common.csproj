@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="CommonUtil.cs" />
     <Compile Include="ConsoleHelper.cs" />
     <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="Func.cs" />

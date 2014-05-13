@@ -44,10 +44,7 @@ namespace DennyTalk
         [FieldOffset(96)]
         public int port;
     }
-
-    /// <summary>
-    /// Информация о пользователе.
-    /// </summary>
+	/*
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
     public struct UserInfo
     {
@@ -64,6 +61,20 @@ namespace DennyTalk
         public string statusText;
 
         [FieldOffset(40 + 4 * (ImageHelper2.AvatarWidth * ImageHelper2.AvatarHeight) + 2000)]
+        public int status;
+    }*/
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct UserInfo
+    {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
+        public string nick;
+
+        [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.I4, SizeConst = ImageHelper2.AvatarWidth * ImageHelper2.AvatarHeight)]
+        public int[] avatar;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1000)]
+        public string statusText;
+
         public int status;
     }
 
@@ -283,15 +294,15 @@ namespace DennyTalk
         public TelegramSendResult Send<T>(Address address, T data) where T : struct
         {
             TelegramHeaderType type;
-            if (typeof(T) == typeof(UserInfo))
+            if (typeof(T).Equals(typeof(UserInfo)))
                 type = TelegramHeaderType.UserInfo;
-            else if (typeof(T) == typeof(TelegramDelivery))
+            else if (typeof(T).Equals(typeof(TelegramDelivery)))
                 type = TelegramHeaderType.MessageDelivered;
-            else if (typeof(T) == typeof(UserStatusSturct))
+            else if (typeof(T).Equals(typeof(UserStatusSturct)))
                 type = TelegramHeaderType.UserStatus;
-            else if (typeof(T) == typeof(FilePort))
+            else if (typeof(T).Equals(typeof(FilePort)))
                 type = TelegramHeaderType.FilePort;
-            else if (typeof(T) == typeof(FilePortRequest))
+            else if (typeof(T).Equals(typeof(FilePortRequest)))
                 type = TelegramHeaderType.FilePortRequest;
             else
                 throw new Exception("T is unknown type");
@@ -315,7 +326,7 @@ namespace DennyTalk
             header.id = NewID();
             header.type = type;
             header.dataSize = data.Length;
-            byte[] guidBytes = Encoding.ASCII.GetBytes(address.Guid);
+            //byte[] guidBytes = Encoding.ASCII.GetBytes(address.Guid);
             header.toGuid = address.Guid;
             header.fromGuid = guid;
             header.port = client.Port;

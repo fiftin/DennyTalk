@@ -57,16 +57,18 @@ namespace DennyTalk
             }
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            port = int.Parse(txtPort.Text);
-            serverPort = int.Parse(txtServerPort.Text);
-            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            if (chkAutorun.Checked)
+        private void btnOK_Click (object sender, EventArgs e)
+		{
+			port = int.Parse (txtPort.Text);
+			serverPort = int.Parse (txtServerPort.Text);
+			RegistryKey rkApp = Registry.CurrentUser.OpenSubKey ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if (rkApp != null) {
+				if (chkAutorun.Checked)
                 // Add the value in the registry so that the application runs at startup
-                rkApp.SetValue("DennyTalk", Application.ExecutablePath.ToString());
-            else
-                rkApp.DeleteValue("DennyTalk", false);
+					rkApp.SetValue ("DennyTalk", Application.ExecutablePath.ToString ());
+				else
+					rkApp.DeleteValue ("DennyTalk", false);
+			}
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -83,7 +85,8 @@ namespace DennyTalk
         private void ConfigurationDialog_Load(object sender, EventArgs e)
         {
             RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            chkAutorun.Checked = rkApp.GetValue("DennyTalk") != null;
+            if (rkApp != null)
+				chkAutorun.Checked = rkApp.GetValue("DennyTalk") != null;
         }
     }
 }
