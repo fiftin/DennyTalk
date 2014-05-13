@@ -134,6 +134,7 @@ namespace DennyTalk
         /// </summary>
         void telegramListener_FilePortReceived(object sender, FilePortReceivedEventArgs e)
         {
+			/*
             Message msg = FindMessage(e.RequestId, MessageType.FilesRequest, (ContactEx)contactManager.GetContactByAddress(e.Address));
             if (msg != null)
             {
@@ -148,6 +149,7 @@ namespace DennyTalk
                 else
                     msg.Text += "\nTransfering canceled";
             }
+			*/
         }
 
         /// <summary>
@@ -155,8 +157,8 @@ namespace DennyTalk
         /// </summary>
         void telegramListener_FilePortRequest(object sender, FilePortRequestReceivedEventArgs e)
         {
-            String s = string.Format("Received request for transfering {0} file(s)", e.NumberOfFiles);
-            Message msg = new Message(DateTime.Now, s, 
+            //String s = string.Format("Received request for transfering {0} file(s)", e.NumberOfFiles);
+            Message msg = new Message(DateTime.Now, "", 
                 MessageDirection.In, e.Address, MessageType.FilesRequest);
             msg.Tag = new FilePortRequestInfo(e.NumberOfFiles, e.Address, telegramListener, messanger.FileReceivingPort);
             msg.ID = e.RequestId;

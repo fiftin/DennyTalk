@@ -194,18 +194,20 @@ namespace DennyTalk
                 Message msg = (Message)row.DataBoundItem;
                 if (msg.Type == MessageType.FilesRequest && msg.Direction == MessageDirection.In)
                 {
-                    if (e.Location.X > 10 && e.Location.X < 50
-                        && e.Location.Y < row.Height - 10
-                        && e.Location.Y > row.Height - 25)
+                    if (e.Location.X > DataGridViewDialogMessageCell.ButtonMargin
+					    && e.Location.X < DataGridViewDialogMessageCell.ButtonMargin + DataGridViewDialogMessageCell.ButtonWidth
+                        && e.Location.Y < row.Height - DataGridViewDialogMessageCell.ButtonMargin
+                        && e.Location.Y > row.Height - (DataGridViewDialogMessageCell.ButtonMargin + DataGridViewDialogMessageCell.ButtonHeight))
                     {
                         DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
                         req.TelegramListener.SendFilePort(req.Address, req.FileReceivingPort, msg.ID);
                         req.IsAcknowledged = true;
                         req.IsAccepted = true;
                     }
-                    else if (e.Location.X > 60 && e.Location.X < 100
-                        && e.Location.Y < row.Height - 10
-                        && e.Location.Y > row.Height - 25)
+                    else if (e.Location.X > DataGridViewDialogMessageCell.ButtonMargin * 2 + DataGridViewDialogMessageCell.ButtonWidth 
+					         && e.Location.X < DataGridViewDialogMessageCell.ButtonMargin * 2 + DataGridViewDialogMessageCell.ButtonWidth * 2
+                        	 && e.Location.Y < row.Height - DataGridViewDialogMessageCell.ButtonMargin
+                             && e.Location.Y > row.Height - (DataGridViewDialogMessageCell.ButtonMargin + DataGridViewDialogMessageCell.ButtonHeight))
                     {
                         DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
                         req.TelegramListener.SendFilePort(req.Address, -1, msg.ID);
@@ -215,9 +217,10 @@ namespace DennyTalk
                 }
                 else if (msg.Type == MessageType.Files)
                 {
-                    if (e.Location.X > 10 && e.Location.X < 50
-                        && e.Location.Y < row.Height - 10
-                        && e.Location.Y > row.Height - 25)
+                   if (e.Location.X > DataGridViewDialogMessageCell.ButtonMargin
+					    && e.Location.X < DataGridViewDialogMessageCell.ButtonMargin + DataGridViewDialogMessageCell.ButtonWidth
+                        && e.Location.Y < row.Height - DataGridViewDialogMessageCell.ButtonMargin
+                        && e.Location.Y > row.Height - (DataGridViewDialogMessageCell.ButtonMargin + DataGridViewDialogMessageCell.ButtonHeight))
                     {
                         FileTransferClient client = (FileTransferClient)msg.Tag;
                         client.Cancel();
