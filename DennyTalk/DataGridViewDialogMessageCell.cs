@@ -16,6 +16,7 @@ namespace DennyTalk
 
         private const int AddHeight = 25;
         private const int MinHeight = 52;
+		private const int TickWidthAndHeight = 15;
 
 		public DataGridViewDialogMessageCell ()
 		{
@@ -63,12 +64,11 @@ namespace DennyTalk
 					);
 				}
 
-
 				DrawNick (msg, graphics, cellBounds);
 
 				SizeF textSize = graphics.MeasureString (msg.Text, cellStyle.Font, cellBounds.Width);
 
-				int height = (int)Math.Ceiling (textSize.Height) + cellStyle.Padding.Top;;
+				int height = (int)Math.Ceiling (textSize.Height) + cellStyle.Padding.Top;
 				Font buttonFont = cellStyle.Font;
 				int charHeight = (int)Math.Ceiling (cellStyle.Font.GetHeight());
 
@@ -78,17 +78,11 @@ namespace DennyTalk
 					//
 					if (msg.Direction == MessageDirection.In) {
 						DennyTalk.DialogManager.FilePortRequestInfo req = (DennyTalk.DialogManager.FilePortRequestInfo)msg.Tag;
-						string s = string.Format ("Received request for transfering {0} file(s)", req.NumberOfFiles);
+						string s = string.Format ("Received request for transfering {0} file(s):", req.NumberOfFiles);
 						int sHeight = (int)graphics.MeasureString(s, cellStyle.Font).Height;
 						graphics.DrawString (s, cellStyle.Font, currentForeBrush, cellBounds.Left, cellBounds.Top + cellStyle.Padding.Top);
 
-						for (int i = 0; i < req.NumberOfFiles; i++) {
-							int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + i * charHeight;
-							int x = cellBounds.X;
-							graphics.DrawString (string.Format ("{0}. ???", i + 1), buttonFont, Brushes.Black, x, y);
-						}
-
-						height = sHeight + req.NumberOfFiles * charHeight + cellStyle.Padding.Top;
+						height = sHeight + cellStyle.Padding.Top;
 
 						if (!req.IsAcknowledged) {
 
@@ -114,25 +108,51 @@ namespace DennyTalk
 						}
 					}
 				} else if (msg.Type == MessageType.Files) {
+					//
+					// Draw received/sent files
+					//
 					FileTransferClient client = (FileTransferClient)msg.Tag;
 					string[] downloaded = client.GetLoadedFiles ();
+					string s = msg.Direction== MessageDirection.In ? "Receiving file(s):" : "Sending file(s):";
+					int sHeight = (int)graphics.MeasureString(s, cellStyle.Font).Height;
+					graphics.DrawString (s, cellStyle.Font, currentForeBrush, cellBounds.Left, cellBounds.Top + cellStyle.Padding.Top);
+
 					for (int i = 0; i < downloaded.Length; i++) {
 						int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + i * charHeight;
-						int x = cellBounds.X + 20;
-						graphics.FillRectangle (Brushes.BlueViolet, x, y, cellBounds.Width - 40, charHeight);
-						graphics.DrawImage (ImageHelper.Tick, x + cellBounds.Width - 35, y, 15, 15);
-						graphics.DrawString (downloaded [i], buttonFont, Brushes.Black, x, y);
+						int x = cellBounds.X;
+						int rectOffsetX = (int)graphics.MeasureString(string.Format("{0}. ", i+1), cellStyle.Font).Width;
+						graphics.FillRectangle (Brushes.BlueViolet, x + rectOffsetX, y, 
+						                        cellBounds.Width - rectOffsetX - TickWidthAndHeight,
+						                        charHeight);
+						graphics.DrawImage (ImageHelper.Tick,
+						                    x + cellBounds.Width - rectOffsetX - TickWidthAndHeight,
+						                    y,
+						                    TickWidthAndHeight,
+						                    TickWidthAndHeight);
+						graphics.DrawString (string.Format("{0}. {1}", i + 1, downloaded[i]), cellStyle.Font, currentForeBrush, x, y);
 					}
 					if (client.CurrentFileName != null) {
 						int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + client.CurrentFileNumber * charHeight;
-						int x = cellBounds.X + 20;
-						graphics.FillRectangle (Brushes.White, x, y, cellBounds.Width - 40, charHeight);
-						graphics.FillRectangle (Brushes.BlueViolet, x, y, (cellBounds.Width - 40) * client.CurrentFileLoadingPercent / 100, charHeight);
+						int x = cellBounds.X;
+						int rectOffsetX = (int)graphics.MeasureString(string.Format("{0}. ", client.CurrentFileNumber+1), cellStyle.Font).Width;
+						graphics.FillRectangle (Brushes.White, x + rectOffsetX, y, cellBounds.Width - rectOffsetX - TickWidthAndHeight, charHeight);
+						graphics.FillRectangle (Brushes.BlueViolet, x + rectOffsetX, y, (cellBounds.Width - rectOffsetX - TickWidthAndHeight) * client.CurrentFileLoadingPercent / 100, charHeight);
 						graphics.DrawString (client.CurrentFileName, buttonFont, Brushes.Black, x, y);
 					}
-					height = (int)Math.Ceiling (Math.Max (textSize.Height, downloaded.Length * charHeight)) + AddHeight;
+					FileSenderConnection conn = client as FileSenderConnection;
+					if (conn != null) {
+						conn = (FileSenderConnection)client;
+						for (int i = client.CurrentFileNumber + 1; i < conn.FileNames.Length; i++) {
+							int y = cellBounds.Y + cellStyle.Padding.Top + charHeight + i * charHeight;
+							int x = cellBounds.X;
+							graphics.DrawString (string.Format("{0}. {1}", i + 1, System.IO.Path.GetFileName(conn.FileNames[i])), cellStyle.Font, currentForeBrush, x, y);
+						}
+					}
+
+					height = sHeight + (conn==null ? downloaded.Length : conn.FileNames.Length) * charHeight + cellStyle.Padding.Top; //Math.Max(sHeight + (conn==null ? downloaded.Length : conn.FileNames.Length) * charHeight + cellStyle.Padding.Top, height);
+
 					if (client.IsFinished) {
-						height += 25;
+						height += ButtonMargin * 2 + charHeight;
 						string str;
 						if (client.IsCanceled)
 							str = "File transfering canceled";
@@ -140,11 +160,11 @@ namespace DennyTalk
 							str = "File transfering rejected remote user";
 						else
 							str = "File transfering finished succesfull";
-						graphics.DrawString (str, buttonFont, Brushes.BlueViolet, cellBounds.X + 10, cellBounds.Y + height - 25);
+						graphics.DrawString (str, buttonFont, Brushes.BlueViolet, cellBounds.X, cellBounds.Y + height - charHeight - ButtonMargin);
 					} else {
-						height += 25;
-						graphics.FillRectangle (Brushes.LightGray, cellBounds.X + 10, cellBounds.Y + height - 25, 40, 15);
-						graphics.DrawString ("Cancel", buttonFont, Brushes.Black, cellBounds.X + 10, cellBounds.Y + height - 25);
+						height += ButtonMargin * 2 + ButtonHeight;
+						graphics.FillRectangle (Brushes.LightGray, cellBounds.X + ButtonMargin, cellBounds.Y + height - ButtonMargin - ButtonHeight, ButtonWidth, ButtonHeight);
+						graphics.DrawString ("Cancel", buttonFont, Brushes.Black, cellBounds.X + ButtonMargin, cellBounds.Y + height - ButtonMargin - ButtonHeight);
 					}
 				}
 				if (height < MinHeight)

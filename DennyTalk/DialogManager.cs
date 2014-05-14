@@ -157,7 +157,6 @@ namespace DennyTalk
         /// </summary>
         void telegramListener_FilePortRequest(object sender, FilePortRequestReceivedEventArgs e)
         {
-            //String s = string.Format("Received request for transfering {0} file(s)", e.NumberOfFiles);
             Message msg = new Message(DateTime.Now, "", 
                 MessageDirection.In, e.Address, MessageType.FilesRequest);
             msg.Tag = new FilePortRequestInfo(e.NumberOfFiles, e.Address, telegramListener, messanger.FileReceivingPort);
@@ -287,10 +286,11 @@ namespace DennyTalk
 
         void dialogForm_FilesSend(object sender, FilesSendEventArgs e)
         {
-            StringBuilder b = new StringBuilder();
-            for (int i = 0; i < e.FileNames.Length; i++)
-                b.AppendLine(string.Format("{0}. {1}", i + 1, System.IO.Path.GetFileName(e.FileNames[i])));
-            Message msg = new Message(DateTime.Now, string.Format("Sending file(s):\n{0}", b.ToString()), MessageDirection.Out, e.ReceiverContectInfo.Address, MessageType.Files);
+            //StringBuilder b = new StringBuilder();
+            //for (int i = 0; i < e.FileNames.Length; i++)
+            //    b.AppendLine(string.Format("{0}. {1}", i + 1, System.IO.Path.GetFileName(e.FileNames[i])));
+            Message msg = new Message(DateTime.Now, "",
+			                          MessageDirection.Out, e.ReceiverContectInfo.Address, MessageType.Files);
             FileSenderConnection conn = messanger.SendFiles(e.ReceiverContectInfo, e.FileNames);
             msg.ID = conn.RequestId;
             msg.Tag = conn;
